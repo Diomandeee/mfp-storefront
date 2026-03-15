@@ -8,22 +8,26 @@ import type { ShopifyProduct } from '../lib/shopify';
 import { useCart } from '../lib/cart-context';
 import { useTheme } from '../lib/theme-context';
 
-const PRODUCT_DETAILS: Record<string, { tagline: string; features: string[] }> = {
+const PRODUCT_DETAILS: Record<string, { tagline: string; features: string[]; fallbackImage: string }> = {
   'booster': {
     tagline: '5 random oracle cards. Open the unknown.',
     features: ['5 random cards', 'Mixed rarities', 'NFC-enabled', 'Surprise triptych fragments'],
+    fallbackImage: '/booster-pack.png',
   },
   'chapter': {
     tagline: 'Choose your chapter. Receive the complete triptych.',
     features: ['3 cards per chapter', 'Complete A/B/C triptych', 'NFC-enabled', 'Deep chapter immersion'],
+    fallbackImage: '/chapter-pack.png',
   },
   'oracle': {
     tagline: 'The complete 45-card oracle experience.',
     features: ['All 45 cards', 'All 15 chapters', 'Premium box', 'Complete NFC library'],
+    fallbackImage: '/oracle-deck.png',
   },
   'display': {
     tagline: '24 booster packs. For the devoted collector.',
     features: ['24 booster packs', '120 total cards', 'Display box', 'Collector tier'],
+    fallbackImage: '/display-box.png',
   },
 };
 
@@ -135,15 +139,11 @@ export default function ProductsSection() {
                     background: `linear-gradient(135deg, rgb(var(--bg-tertiary)), rgb(var(--bg-secondary)))`,
                   }}
                 >
-                  {img ? (
-                    <img
-                      src={img.url}
-                      alt={img.altText || product.title}
-                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                    />
-                  ) : (
-                    <Package size={40} style={{ color: 'rgb(var(--accent) / 0.15)' }} />
-                  )}
+                  <img
+                    src={img?.url || details.fallbackImage}
+                    alt={img?.altText || product.title}
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  />
                 </div>
 
                 <div className="p-6 flex-1 flex flex-col">
@@ -206,10 +206,10 @@ export default function ProductsSection() {
                 }}
               >
                 <div
-                  className="h-48 flex items-center justify-center"
+                  className="h-48 relative overflow-hidden"
                   style={{ background: 'linear-gradient(135deg, rgb(var(--bg-tertiary)), rgb(var(--bg-secondary)))' }}
                 >
-                  <Package size={40} style={{ color: 'rgb(var(--accent) / 0.15)' }} />
+                  <img src={details.fallbackImage} alt={fp.title} className="w-full h-full object-cover" />
                 </div>
                 <div className="p-6 flex-1 flex flex-col">
                   <h3 className="font-heading text-lg mb-1" style={{ color: 'rgb(var(--text-primary))' }}>{fp.title}</h3>
