@@ -219,11 +219,7 @@
    Base Styles
    ============================================ */
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
+/* Tailwind preflight handles the reset — do NOT override with * {} */
 
 html {
   scroll-behavior: smooth;
