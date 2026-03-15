@@ -5,8 +5,7 @@
    MEANING FULL POWER — 10 Theme System
    ============================================ */
 
-@theme {
-  --spacing: 0.25rem;
+@theme inline {
   --color-gold: #D4AF37;
   --color-gold-dim: #8B7335;
   --color-gold-bright: #FFD700;
