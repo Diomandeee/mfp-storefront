@@ -144,6 +144,15 @@ export default function Navigation() {
       {/* Theme/Layout settings panel */}
       <AnimatePresence>
         {settingsOpen && (
+          <>
+          {/* Backdrop to dismiss */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-40"
+            onClick={() => setSettingsOpen(false)}
+          />
           <motion.div
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
@@ -162,24 +171,26 @@ export default function Navigation() {
                   Theme
                 </span>
               </div>
-              <div className="grid grid-cols-5 gap-2 mb-6">
+              <div className="grid grid-cols-2 gap-1.5 mb-6">
                 {THEMES.map(t => (
                   <button
                     key={t.id}
-                    onClick={() => setTheme(t.id as ThemeId)}
-                    className="w-10 h-10 rounded-lg cursor-pointer transition-transform hover:scale-110 relative"
+                    onClick={() => { setTheme(t.id as ThemeId); setSettingsOpen(false); }}
+                    className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg cursor-pointer transition-all text-left"
                     style={{
-                      background: t.bgPrimary,
+                      background: theme === t.id ? 'rgb(var(--accent) / 0.1)' : 'transparent',
                       border: theme === t.id
-                        ? `2px solid ${t.accentHex}`
-                        : '1px solid rgb(var(--border) / 0.2)',
+                        ? '1px solid rgb(var(--accent) / 0.3)'
+                        : '1px solid transparent',
                     }}
-                    title={t.name}
                   >
                     <span
-                      className="absolute inset-2 rounded-sm"
-                      style={{ background: t.accentHex, opacity: 0.6 }}
+                      className="w-4 h-4 rounded-full flex-shrink-0"
+                      style={{ background: t.accentHex }}
                     />
+                    <span className="text-[10px] font-medium" style={{ color: theme === t.id ? 'rgb(var(--text-primary))' : 'rgb(var(--text-secondary))' }}>
+                      {t.name}
+                    </span>
                   </button>
                 ))}
               </div>
@@ -209,6 +220,7 @@ export default function Navigation() {
               </div>
             </div>
           </motion.div>
+          </>
         )}
       </AnimatePresence>
     </>

@@ -22,7 +22,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body>
+      <body style={{ background: 'rgb(var(--bg-primary))', color: 'rgb(var(--text-body))', minHeight: '100vh' }}>
         <ThemeProvider>
           <CartProvider>{children}</CartProvider>
         </ThemeProvider>
