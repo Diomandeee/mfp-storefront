@@ -6,6 +6,7 @@
    ============================================ */
 
 @theme {
+  --spacing: 0.25rem;
   --color-gold: #D4AF37;
   --color-gold-dim: #8B7335;
   --color-gold-bright: #FFD700;
