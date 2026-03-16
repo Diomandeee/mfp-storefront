@@ -12,7 +12,7 @@ import CartDrawer from './components/CartDrawer';
 
 export default function Home() {
   return (
-    <main className="pt-16">
+    <main className="pt-14">
       <Navigation />
       <CartDrawer />
       <HeroSection />
