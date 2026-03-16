@@ -72,6 +72,11 @@ function CardDetailModal({ card, onClose }: { card: Card; onClose: () => void })
           <X size={16} />
         </button>
 
+        {/* Card Art */}
+        <div className="h-56 relative overflow-hidden" style={{ background: `linear-gradient(180deg, ${card.theme_color}20, rgb(var(--bg-secondary)))` }}>
+          <img src={`/cards/${card.id}.png`} alt={card.name} className="w-full h-full object-contain" />
+        </div>
+
         <div className="p-8">
           {/* Header */}
           <div className="flex items-start justify-between mb-6">
@@ -168,14 +173,19 @@ function OracleCard({ card, onClick }: { card: Card; onClick: () => void }) {
       {/* Card top accent */}
       <div className="h-0.5" style={{ background: card.theme_color }} />
 
-      {/* Card art placeholder */}
+      {/* Card art */}
       <div
-        className="h-32 relative flex items-center justify-center"
+        className="h-40 relative overflow-hidden"
         style={{
-          background: `linear-gradient(135deg, ${card.theme_color}10, ${card.theme_color}05)`,
+          background: `linear-gradient(135deg, ${card.theme_color}15, rgb(var(--bg-primary)))`,
         }}
       >
-        <span className="text-3xl opacity-30">{card.theme_icon}</span>
+        <img
+          src={`/cards/${card.id}.png`}
+          alt={card.name}
+          className="w-full h-full object-cover object-center opacity-90 transition-transform duration-500 group-hover:scale-110"
+          loading="lazy"
+        />
         {/* ID badge */}
         <span
           className="absolute top-2 left-2 text-[8px] tracking-widest uppercase px-1.5 py-0.5 rounded"
