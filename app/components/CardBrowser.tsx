@@ -164,79 +164,17 @@ function OracleCard({ card, onClick }: { card: Card; onClick: () => void }) {
       whileHover={{ y: -4, scale: 1.02 }}
       transition={{ duration: 0.3 }}
       onClick={onClick}
-      className="card-oracle rounded-xl overflow-hidden cursor-pointer"
-      style={{
-        background: 'rgb(var(--surface))',
-        border: '1px solid rgb(var(--border) / 0.1)',
-      }}
+      className="cursor-pointer"
     >
-      {/* Card top accent */}
-      <div className="h-0.5" style={{ background: card.theme_color }} />
-
-      {/* Card art */}
-      <div
-        className="h-40 relative overflow-hidden"
+      <img
+        src={`/cards/${card.id}.png`}
+        alt={`${card.name} — ${card.chapter_title}`}
+        className="w-full h-auto rounded-lg"
+        loading="lazy"
         style={{
-          background: `linear-gradient(135deg, ${card.theme_color}15, rgb(var(--bg-primary)))`,
+          filter: 'drop-shadow(0 4px 16px rgba(0,0,0,0.5))',
         }}
-      >
-        <img
-          src={`/cards/${card.id}.png`}
-          alt={card.name}
-          className="w-full h-full object-cover object-center opacity-90 transition-transform duration-500 group-hover:scale-110"
-          loading="lazy"
-        />
-        {/* ID badge */}
-        <span
-          className="absolute top-2 left-2 text-[8px] tracking-widest uppercase px-1.5 py-0.5 rounded"
-          style={{ background: 'rgb(var(--bg-primary) / 0.6)', color: 'rgb(var(--text-secondary) / 0.5)' }}
-        >
-          {card.id}
-        </span>
-        {/* Triptych role badge */}
-        <span
-          className="absolute top-2 right-2 text-[9px] tracking-wider uppercase px-1.5 py-0.5 rounded-full font-bold"
-          style={{
-            background: card.triptych_role === 'A' ? '#3B82F620' : card.triptych_role === 'B' ? '#EF444420' : '#8B5CF620',
-            color: card.triptych_role === 'A' ? '#3B82F6' : card.triptych_role === 'B' ? '#EF4444' : '#8B5CF6',
-            border: `1px solid ${card.triptych_role === 'A' ? '#3B82F630' : card.triptych_role === 'B' ? '#EF444430' : '#8B5CF630'}`,
-          }}
-        >
-          {card.triptych_role}
-        </span>
-      </div>
-
-      <div className="p-4">
-        <div className="flex items-start justify-between mb-1">
-          <h4 className="font-heading text-sm" style={{ color: 'rgb(var(--text-primary))' }}>
-            {card.name}
-          </h4>
-          <RarityStars count={card.rarity_stars} />
-        </div>
-
-        <p className="text-[10px] mb-3" style={{ color: 'rgb(var(--text-secondary) / 0.5)' }}>
-          Ch. {card.chapter} - {card.theme}
-        </p>
-
-        {/* Stats bar */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-1">
-            <Zap size={10} style={{ color: card.theme_color }} />
-            <span className="text-[10px] font-bold" style={{ color: card.theme_color }}>
-              {card.emotional_power}
-            </span>
-          </div>
-          <span
-            className="text-[8px] px-1.5 py-0.5 rounded-full tracking-wider uppercase"
-            style={{
-              background: `${RARITY_COLORS[card.rarity]}10`,
-              color: RARITY_COLORS[card.rarity],
-            }}
-          >
-            {card.rarity}
-          </span>
-        </div>
-      </div>
+      />
     </motion.div>
   );
 }
