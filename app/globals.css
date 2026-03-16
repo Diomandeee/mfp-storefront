@@ -359,6 +359,95 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* ============================================
+   Per-Theme Typography & Behavioral Overrides
+   ============================================ */
+
+/* Sacred Gold — regal, wide tracking, gold foil shimmer */
+:root { --heading-tracking: 0.08em; --heading-transform: uppercase; --border-radius-card: 12px; --section-padding: 6rem; }
+:root .card-oracle:hover { box-shadow: 0 0 30px rgba(212,175,55,0.15); }
+:root h2 { letter-spacing: 0.08em; text-transform: uppercase; }
+
+/* Moonlit Oracle — ethereal, italic headers, blue glow */
+[data-theme="moonlit"] { --heading-tracking: 0.04em; --heading-transform: none; --border-radius-card: 16px; --section-padding: 7rem; }
+[data-theme="moonlit"] h2 { letter-spacing: 0.04em; text-transform: none; font-style: italic; }
+[data-theme="moonlit"] .card-oracle:hover { box-shadow: 0 0 20px rgba(140,160,220,0.12); transform: translateY(-6px); }
+[data-theme="moonlit"] .btn-primary { border-radius: 999px; }
+
+/* Ember Wisdom — warm, tight tracking, fire-edge shadows */
+[data-theme="ember"] { --heading-tracking: 0.02em; --heading-transform: none; --border-radius-card: 8px; --section-padding: 5rem; }
+[data-theme="ember"] h2 { letter-spacing: 0.02em; text-transform: none; }
+[data-theme="ember"] .card-oracle:hover { box-shadow: 4px 4px 0 rgba(232,163,23,0.2); transform: rotate(-1deg) scale(1.01); }
+[data-theme="ember"] .btn-primary { border-radius: 4px; border-bottom: 3px solid rgba(232,163,23,0.4); }
+
+/* Crystal Seer — prismatic border shimmer, geometric */
+[data-theme="crystal"] { --heading-tracking: 0.12em; --heading-transform: uppercase; --border-radius-card: 4px; --section-padding: 6rem; }
+[data-theme="crystal"] h2 { letter-spacing: 0.12em; text-transform: uppercase; }
+[data-theme="crystal"] .card-oracle { border: 1px solid rgba(167,139,250,0.2); }
+[data-theme="crystal"] .card-oracle:hover { box-shadow: 0 0 24px rgba(167,139,250,0.12), 0 0 48px rgba(34,211,238,0.06); border-color: rgba(167,139,250,0.4); }
+[data-theme="crystal"] .btn-primary { border-radius: 2px; clip-path: polygon(8px 0, 100% 0, calc(100% - 8px) 100%, 0 100%); }
+
+/* Forest Oracle — organic, no uppercase, round everything */
+[data-theme="forest"] { --heading-tracking: 0em; --heading-transform: none; --border-radius-card: 20px; --section-padding: 6.5rem; }
+[data-theme="forest"] h2 { letter-spacing: 0em; text-transform: none; }
+[data-theme="forest"] .card-oracle:hover { box-shadow: 0 8px 32px rgba(52,211,153,0.1); transform: translateY(-4px); }
+[data-theme="forest"] .btn-primary { border-radius: 999px; }
+
+/* Desert Prophet — weathered, wide, minimal decoration */
+[data-theme="desert"] { --heading-tracking: 0.15em; --heading-transform: uppercase; --border-radius-card: 2px; --section-padding: 8rem; }
+[data-theme="desert"] h2 { letter-spacing: 0.15em; text-transform: uppercase; }
+[data-theme="desert"] .card-oracle { border: 1px solid rgba(194,133,90,0.15); }
+[data-theme="desert"] .card-oracle:hover { box-shadow: 8px 0 0 rgba(194,133,90,0.25); }
+[data-theme="desert"] .btn-primary { border-radius: 0; border: 2px solid; }
+
+/* Arctic Rune — crisp, monospace-like tracking, no curves */
+[data-theme="arctic"] { --heading-tracking: 0.2em; --heading-transform: uppercase; --border-radius-card: 0; --section-padding: 5.5rem; }
+[data-theme="arctic"] h2 { letter-spacing: 0.2em; text-transform: uppercase; font-weight: 300; }
+[data-theme="arctic"] .card-oracle { border: 1px solid rgba(125,211,252,0.1); }
+[data-theme="arctic"] .card-oracle:hover { box-shadow: 0 0 0 2px rgba(125,211,252,0.2); transform: scale(1.03); }
+[data-theme="arctic"] .btn-primary { border-radius: 0; }
+
+/* Cosmic Deck — glowing, playful, rotation on hover */
+[data-theme="cosmic"] { --heading-tracking: 0.06em; --heading-transform: none; --border-radius-card: 14px; --section-padding: 6rem; }
+[data-theme="cosmic"] h2 { letter-spacing: 0.06em; text-transform: none; }
+[data-theme="cosmic"] .card-oracle:hover { box-shadow: 0 0 40px rgba(244,114,182,0.15), 0 0 80px rgba(167,139,250,0.08); transform: rotate(1deg) scale(1.02); }
+[data-theme="cosmic"] .btn-primary { border-radius: 14px; background: linear-gradient(135deg, rgba(244,114,182,0.9), rgba(167,139,250,0.9)); }
+
+/* Blood Ink — brutalist, sharp, zero radius, red strikes */
+[data-theme="blood"] { --heading-tracking: 0.1em; --heading-transform: uppercase; --border-radius-card: 0; --section-padding: 4.5rem; }
+[data-theme="blood"] h2 { letter-spacing: 0.1em; text-transform: uppercase; font-weight: 900; }
+[data-theme="blood"] .card-oracle { border-radius: 0 !important; border: 1px solid rgba(220,38,38,0.15); }
+[data-theme="blood"] .card-oracle:hover { border-left: 4px solid #dc2626; box-shadow: none; }
+[data-theme="blood"] .btn-primary { border-radius: 0; border: 2px solid #dc2626; background: transparent; }
+
+/* Dawn Light — soft, warm, generous radius, light shadows */
+[data-theme="dawn"] { --heading-tracking: 0.03em; --heading-transform: none; --border-radius-card: 24px; --section-padding: 7rem; }
+[data-theme="dawn"] h2 { letter-spacing: 0.03em; text-transform: none; font-weight: 400; }
+[data-theme="dawn"] .card-oracle { border-radius: 20px; box-shadow: 0 4px 20px rgba(184,134,11,0.06); }
+[data-theme="dawn"] .card-oracle:hover { box-shadow: 0 8px 40px rgba(184,134,11,0.12); transform: translateY(-4px); }
+[data-theme="dawn"] .btn-primary { border-radius: 999px; box-shadow: 0 2px 12px rgba(184,134,11,0.15); }
+
+/* Per-Theme Grain & Texture Overlays */
+[data-theme="blood"] body::before { background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.2' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E"); }
+[data-theme="desert"] body::before { background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.6' numOctaves='6' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E"); }
+[data-theme="arctic"] body::before { opacity: 0.015; }
+
+/* Blood Ink — Scanline overlay */
+[data-theme="blood"] body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9998;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(220,38,38,0.015) 2px,
+    rgba(220,38,38,0.015) 4px
+  );
+}
+
+/* ============================================
    Utility Classes
    ============================================ */
 
@@ -463,3 +552,32 @@ h1, h2, h3, h4, h5, h6 {
   background: rgb(var(--accent) / 0.3);
   color: rgb(var(--text-primary));
 }
+
+/* ============================================
+   Per-Theme Section Header Alignment
+   ============================================ */
+
+/* Default (Sacred Gold) — centered headers */
+.section-header { text-align: center; }
+
+/* Codex-style themes get left-aligned headers */
+[data-theme="desert"] .section-header,
+[data-theme="blood"] .section-header,
+[data-theme="arctic"] .section-header {
+  text-align: left;
+}
+
+/* Eyebrow treatment per theme */
+[data-theme="ember"] .section-eyebrow { border-bottom: 1px solid rgb(var(--accent) / 0.2); padding-bottom: 4px; display: inline-block; }
+[data-theme="crystal"] .section-eyebrow { background: rgb(var(--accent) / 0.08); padding: 2px 10px; border-radius: 2px; }
+[data-theme="blood"] .section-eyebrow { border-left: 3px solid rgb(var(--accent)); padding-left: 8px; }
+[data-theme="arctic"] .section-eyebrow { font-weight: 200; }
+
+/* ============================================
+   Per-Layout Product Grid Variants
+   ============================================ */
+
+[data-layout="codex"] .product-card { flex-direction: row; }
+[data-layout="codex"] .product-card .product-image { width: 200px; min-height: auto; }
+[data-layout="minimal"] .product-card { border: none; background: transparent; }
+[data-layout="gallery"] .product-card { aspect-ratio: auto; }

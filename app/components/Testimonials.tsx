@@ -33,8 +33,8 @@ const testimonials = [
 export default function Testimonials() {
   return (
     <section className="py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-      <div className="text-center mb-16">
-        <p className="text-[10px] tracking-[0.4em] uppercase font-heading mb-3" style={{ color: 'rgb(var(--accent) / 0.5)' }}>
+      <div className="section-header text-center mb-16">
+        <p className="text-[10px] tracking-[0.4em] uppercase font-heading section-eyebrow mb-3" style={{ color: 'rgb(var(--accent) / 0.5)' }}>
           Witnesses
         </p>
         <h2 className="font-heading text-3xl sm:text-4xl mb-4" style={{ color: 'rgb(var(--text-primary))' }}>

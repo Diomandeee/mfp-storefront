@@ -16,14 +16,14 @@ export default function ChapterJourney() {
 
   return (
     <section id="chapters" className="py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-      <div className="text-center mb-16">
-        <p className="text-[10px] tracking-[0.4em] uppercase font-heading mb-3" style={{ color: 'rgb(var(--accent) / 0.5)' }}>
+      <div className={`section-header mb-16 ${layout === 'codex' ? 'text-left max-w-2xl mx-auto' : 'text-center'}`}>
+        <p className="text-[10px] tracking-[0.4em] uppercase font-heading section-eyebrow mb-3" style={{ color: 'rgb(var(--accent) / 0.5)' }}>
           The Path
         </p>
         <h2 className="font-heading text-3xl sm:text-4xl mb-4" style={{ color: 'rgb(var(--text-primary))' }}>
           15 Chapters of Wisdom
         </h2>
-        <p className="text-sm max-w-lg mx-auto" style={{ color: 'rgb(var(--text-body) / 0.6)' }}>
+        <p className={`text-sm ${layout === 'codex' ? '' : 'max-w-lg mx-auto'}`} style={{ color: 'rgb(var(--text-body) / 0.6)' }}>
           Each chapter holds three cards forming a triptych: Concept, Challenge, and Transcendence. Walk the path from awakening to mastery.
         </p>
       </div>
