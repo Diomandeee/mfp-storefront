@@ -1,9 +1,10 @@
 'use client';
 
 import type { CSSProperties } from 'react';
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { AnimatePresence, motion } from 'framer-motion';
-import { Filter, Search, Star, X, Zap } from 'lucide-react';
+import { Filter, Search, Star, Zap } from 'lucide-react';
 import { CARDS, CHAPTERS, getCardsByChapter } from '../lib/card-manifest';
 import type { Card } from '../lib/card-manifest';
 import { useTheme } from '../lib/theme-context';
@@ -99,159 +100,6 @@ function RarityStars({ count }: { count: number }) {
         );
       })}
     </div>
-  );
-}
-
-function CardDetailModal({ card, onClose }: { card: Card; onClose: () => void }) {
-  useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') onClose();
-    };
-
-    document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [onClose]);
-
-  return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      className="fixed inset-0 z-50 flex items-center justify-center p-4"
-      style={{ background: 'rgb(0 0 0 / 0.76)', backdropFilter: 'blur(10px)' }}
-      onClick={onClose}
-      role="dialog"
-      aria-modal="true"
-    >
-      <motion.div
-        initial={{ opacity: 0, scale: 0.96, y: 18 }}
-        animate={{ opacity: 1, scale: 1, y: 0 }}
-        exit={{ opacity: 0, scale: 0.96, y: 18 }}
-        transition={{ type: 'spring', damping: 20, stiffness: 180 }}
-        className="relative w-full max-w-5xl overflow-hidden rounded-[28px]"
-        style={{
-          background: 'rgb(var(--bg-secondary))',
-          border: '1px solid rgb(var(--border) / 0.16)',
-          boxShadow: `0 32px 120px ${card.theme_color}28`,
-        }}
-        onClick={(event) => event.stopPropagation()}
-        aria-label="Card details"
-      >
-        <button
-          type="button"
-          onClick={onClose}
-          aria-label="Close card details"
-          className="absolute right-4 top-4 z-10 flex h-10 w-10 items-center justify-center rounded-full"
-          style={{
-            background: 'rgb(var(--bg-primary) / 0.7)',
-            color: 'rgb(var(--text-primary))',
-            border: '1px solid rgb(var(--border) / 0.16)',
-          }}
-        >
-          <X size={16} />
-        </button>
-
-        <div className="grid gap-10 p-6 lg:grid-cols-[minmax(0,320px)_minmax(0,1fr)] lg:p-8">
-          <div className="flex justify-center lg:justify-start">
-            <div className="w-full max-w-[320px]">
-              <CardArtwork card={card} alt={card.name} />
-            </div>
-          </div>
-
-          <div>
-            <div className="mb-6 flex flex-wrap items-start justify-between gap-4">
-              <div>
-                <div className="mb-2 flex flex-wrap items-center gap-2">
-                  <span className="text-[10px] tracking-[0.22em] uppercase" style={{ color: card.theme_color }}>
-                    {card.id}
-                  </span>
-                  <span
-                    className="rounded-full px-2 py-0.5 text-[9px] tracking-[0.18em] uppercase"
-                    style={{
-                      background: `${RARITY_COLORS[card.rarity]}18`,
-                      color: RARITY_COLORS[card.rarity],
-                      border: `1px solid ${RARITY_COLORS[card.rarity]}26`,
-                    }}
-                  >
-                    {card.rarity}
-                  </span>
-                  <span className="text-[10px] tracking-[0.16em] uppercase" style={{ color: 'rgb(var(--text-secondary) / 0.5)' }}>
-                    {ROLE_LABELS[card.triptych_role]}
-                  </span>
-                </div>
-                <h3 className="font-heading text-3xl" style={{ color: 'rgb(var(--text-primary))' }}>
-                  {card.name}
-                </h3>
-                <p className="mt-2 text-sm" style={{ color: 'rgb(var(--text-body) / 0.72)' }}>
-                  Chapter {card.chapter}: {card.chapter_title}
-                </p>
-              </div>
-              <RarityStars count={card.rarity_stars} />
-            </div>
-
-            <blockquote
-              className="mb-6 border-l-2 pl-4 text-base italic leading-relaxed"
-              style={{
-                color: 'rgb(var(--text-primary))',
-                borderColor: card.theme_color,
-              }}
-            >
-              &ldquo;{card.quote}&rdquo;
-            </blockquote>
-
-            <div
-              className="mb-6 rounded-[20px] p-5"
-              style={{
-                background: 'rgb(var(--surface))',
-                border: '1px solid rgb(var(--border) / 0.12)',
-              }}
-            >
-              <p className="mb-2 text-[10px] tracking-[0.24em] uppercase font-heading" style={{ color: 'rgb(var(--accent) / 0.6)' }}>
-                Reflection Prompt
-              </p>
-              <p className="text-sm leading-relaxed" style={{ color: 'rgb(var(--text-body))' }}>
-                {card.reflection_prompt}
-              </p>
-            </div>
-
-            <div className="grid gap-3 sm:grid-cols-4">
-              <div className="rounded-2xl p-4" style={{ background: 'rgb(var(--surface))' }}>
-                <div className="text-xl font-heading" style={{ color: card.theme_color }}>
-                  {card.emotional_power}
-                </div>
-                <div className="mt-1 text-[9px] tracking-[0.2em] uppercase" style={{ color: 'rgb(var(--text-secondary) / 0.45)' }}>
-                  Power
-                </div>
-              </div>
-              <div className="rounded-2xl p-4" style={{ background: 'rgb(var(--surface))' }}>
-                <div className="text-xl font-heading" style={{ color: 'rgb(var(--accent))' }}>
-                  {card.wisdom_cost}
-                </div>
-                <div className="mt-1 text-[9px] tracking-[0.2em] uppercase" style={{ color: 'rgb(var(--text-secondary) / 0.45)' }}>
-                  Cost
-                </div>
-              </div>
-              <div className="rounded-2xl p-4" style={{ background: 'rgb(var(--surface))' }}>
-                <div className="text-xl font-heading" style={{ color: 'rgb(var(--text-primary))' }}>
-                  {card.type}
-                </div>
-                <div className="mt-1 text-[9px] tracking-[0.2em] uppercase" style={{ color: 'rgb(var(--text-secondary) / 0.45)' }}>
-                  Type
-                </div>
-              </div>
-              <div className="rounded-2xl p-4" style={{ background: 'rgb(var(--surface))' }}>
-                <div className="text-xl font-heading" style={{ color: 'rgb(var(--text-primary))' }}>
-                  {ROLE_LABELS[card.triptych_role]}
-                </div>
-                <div className="mt-1 text-[9px] tracking-[0.2em] uppercase" style={{ color: 'rgb(var(--text-secondary) / 0.45)' }}>
-                  Role
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </motion.div>
-    </motion.div>
   );
 }
 
@@ -712,7 +560,7 @@ function TriptychGrid({ cards, onSelect }: { cards: Card[]; onSelect: (card: Car
 
 export default function CardBrowser() {
   const { layout } = useTheme();
-  const [selectedCard, setSelectedCard] = useState<Card | null>(null);
+  const router = useRouter();
   const [chapterFilter, setChapterFilter] = useState<number | null>(null);
   const [rarityFilter, setRarityFilter] = useState<Card['rarity'] | null>(null);
   const [typeFilter, setTypeFilter] = useState<Card['type'] | null>(null);
@@ -817,7 +665,7 @@ export default function CardBrowser() {
           gallery: GalleryGrid,
           triptych: TriptychGrid,
         }[layout] || ClassicGrid;
-        return <LayoutComponent cards={filteredCards} onSelect={setSelectedCard} />;
+        return <LayoutComponent cards={filteredCards} onSelect={(card) => router.push(`/cards/${card.id}`)} />;
       })()}
 
       {filteredCards.length === 0 && (
@@ -828,9 +676,6 @@ export default function CardBrowser() {
         </div>
       )}
 
-      <AnimatePresence>
-        {selectedCard && <CardDetailModal card={selectedCard} onClose={() => setSelectedCard(null)} />}
-      </AnimatePresence>
     </section>
   );
 }

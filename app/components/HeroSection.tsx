@@ -205,17 +205,14 @@ function RitualHero({
           <div className="h-px w-12" style={{ background: 'rgb(var(--accent) / 0.3)' }} />
         </motion.div>
 
-        <motion.h1
-          initial={{ opacity: 0, y: 26 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.9, delay: 0.3 }}
+        <h1
           className="font-heading text-4xl leading-tight sm:text-6xl md:text-7xl"
           style={{ color: 'rgb(var(--text-primary))' }}
         >
           {content.taglinePre}{' '}
           <span style={{ color: 'rgb(var(--accent-bright))' }}>{content.accent}</span>{' '}
           {content.taglinePost}
-        </motion.h1>
+        </h1>
 
         <motion.p
           initial={{ opacity: 0, y: 18 }}
@@ -305,10 +302,7 @@ function EditorialHero({
             Oracle Card Game
           </motion.span>
 
-          <motion.h1
-            initial={{ opacity: 0, y: 22 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.85, delay: 0.3 }}
+          <h1
             className="font-heading text-5xl leading-none sm:text-7xl md:text-8xl"
             style={{ color: 'rgb(var(--text-primary))' }}
           >
@@ -317,7 +311,7 @@ function EditorialHero({
               {content.accent}
             </span>
             <span className="block">{content.taglinePost}</span>
-          </motion.h1>
+          </h1>
 
           <motion.div
             initial={{ scaleX: 0 }}
@@ -446,10 +440,7 @@ function SignalHero({
             Signal Deck
           </motion.span>
 
-          <motion.h1
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.3 }}
+          <h1
             className="font-heading text-4xl leading-[0.96] sm:text-6xl md:text-7xl"
             style={{ color: 'rgb(var(--text-primary))' }}
           >
@@ -458,7 +449,7 @@ function SignalHero({
             <span style={{ color: 'rgb(var(--accent-bright))' }}>{content.accent}</span>
             <br />
             {content.taglinePost}
-          </motion.h1>
+          </h1>
 
           <motion.p
             initial={{ opacity: 0, y: 16 }}
@@ -594,10 +585,7 @@ function ManifestHero({ content }: { content: typeof themeHeroContent['sacred-go
         </motion.div>
 
         <div>
-          <motion.h1
-            initial={{ opacity: 0, y: 18 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.75, delay: 0.3 }}
+          <h1
             className="font-heading text-5xl uppercase leading-[0.9] sm:text-7xl md:text-[7rem]"
             style={{
               color: 'rgb(var(--text-primary))',
@@ -609,7 +597,7 @@ function ManifestHero({ content }: { content: typeof themeHeroContent['sacred-go
             <span style={{ color: 'rgb(var(--accent))' }}>{content.accent}</span>
             <br />
             {content.taglinePost}
-          </motion.h1>
+          </h1>
 
           <motion.p
             initial={{ opacity: 0 }}
