@@ -54,12 +54,16 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     document.documentElement.setAttribute('data-layout', layout);
   }, [theme, layout]);
 
-  // Restore from localStorage
+  // Restore from localStorage with validation
   useEffect(() => {
-    const saved = localStorage.getItem('mfp-theme') as ThemeId | null;
-    const savedLayout = localStorage.getItem('mfp-layout') as LayoutId | null;
-    if (saved && THEME_ATTR_MAP[saved] !== undefined) setThemeState(saved);
-    if (savedLayout) setLayoutState(savedLayout);
+    try {
+      const saved = localStorage.getItem('mfp-theme');
+      const savedLayout = localStorage.getItem('mfp-layout');
+      if (saved && THEME_ATTR_MAP[saved as ThemeId] !== undefined) setThemeState(saved as ThemeId);
+      if (savedLayout && ['classic', 'codex', 'minimal', 'gallery', 'triptych'].includes(savedLayout)) setLayoutState(savedLayout as LayoutId);
+    } catch {
+      // localStorage unavailable (private browsing, disabled)
+    }
   }, []);
 
   return (

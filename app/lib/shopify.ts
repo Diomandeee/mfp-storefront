@@ -1,5 +1,5 @@
-const SHOPIFY_DOMAIN = 'zkdbj1-xa.myshopify.com';
-const STOREFRONT_TOKEN = 'bb610fad59f7329cf77485ad3346be32';
+const SHOPIFY_DOMAIN = process.env.NEXT_PUBLIC_SHOPIFY_DOMAIN || 'zkdbj1-xa.myshopify.com';
+const STOREFRONT_TOKEN = process.env.NEXT_PUBLIC_SHOPIFY_STOREFRONT_TOKEN || 'bb610fad59f7329cf77485ad3346be32';
 const API_VERSION = '2025-01';
 
 const endpoint = `https://${SHOPIFY_DOMAIN}/api/${API_VERSION}/graphql.json`;

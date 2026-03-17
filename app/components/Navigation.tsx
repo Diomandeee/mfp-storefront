@@ -179,80 +179,97 @@ export default function Navigation() {
           </div>
         </div>
 
-        {/* Mobile — compact toggle */}
-        <div className="md:hidden">
-          <button
-            onClick={() => setMobileThemeOpen(!mobileThemeOpen)}
-            className="w-full flex items-center justify-between px-4 py-2 cursor-pointer"
-          >
-            <div className="flex items-center gap-2">
-              <Palette size={12} style={{ color: 'rgb(var(--accent))' }} />
-              <span className="text-[10px] font-medium" style={{ color: 'rgb(var(--text-primary))' }}>
+        {/* Mobile — compact dropdown toggle */}
+        <div className="md:hidden flex items-center justify-center py-1">
+          <div className="relative">
+            <button
+              onClick={() => setMobileThemeOpen(!mobileThemeOpen)}
+              className="flex items-center gap-2 px-3 py-1.5 rounded-full cursor-pointer transition-all"
+              style={{
+                background: 'rgb(var(--surface) / 0.6)',
+                border: '1px solid rgb(var(--border) / 0.15)',
+                boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+              }}
+            >
+              <Palette size={11} style={{ color: 'rgb(var(--accent))' }} />
+              <span className="text-[9px] font-bold uppercase tracking-wider" style={{ color: 'rgb(var(--text-primary))' }}>
                 {currentTheme?.name || 'Theme'}
               </span>
-              <span className="text-[9px] px-2 py-0.5 rounded" style={{
-                background: 'rgb(var(--surface) / 0.5)',
-                color: 'rgb(var(--text-secondary))',
-                border: '1px solid rgb(var(--border) / 0.1)',
-              }}>
+              <div className="w-[1px] h-3 mx-0.5" style={{ background: 'rgb(var(--border) / 0.2)' }} />
+              <span className="text-[9px] font-medium" style={{ color: 'rgb(var(--text-secondary) / 0.6)' }}>
                 {layout.charAt(0).toUpperCase() + layout.slice(1)}
               </span>
-            </div>
-            <ChevronDown size={12} className={`transition-transform ${mobileThemeOpen ? 'rotate-180' : ''}`} style={{ color: 'rgb(var(--text-secondary) / 0.5)' }} />
-          </button>
+              <ChevronDown size={10} className={`ml-0.5 transition-transform ${mobileThemeOpen ? 'rotate-180' : ''}`} style={{ color: 'rgb(var(--text-secondary) / 0.4)' }} />
+            </button>
 
-          <AnimatePresence>
-            {mobileThemeOpen && (
-              <motion.div
-                initial={{ height: 0, opacity: 0 }}
-                animate={{ height: 'auto', opacity: 1 }}
-                exit={{ height: 0, opacity: 0 }}
-                className="overflow-hidden"
-                style={{ borderTop: '1px solid rgb(var(--border) / 0.05)' }}
-              >
-                <div className="px-4 py-3 space-y-3">
-                  <div>
-                    <p className="text-[8px] uppercase tracking-[0.2em] mb-2" style={{ color: 'rgb(var(--text-secondary) / 0.3)' }}>Realm</p>
-                    <div className="flex flex-wrap gap-1">
-                      {THEMES.map(t => (
-                        <button
-                          key={t.id}
-                          onClick={() => { setTheme(t.id as ThemeId); setMobileThemeOpen(false); }}
-                          className="px-2 py-1 text-[9px] font-medium cursor-pointer transition-colors rounded"
-                          style={{
-                            background: theme === t.id ? 'rgb(var(--accent) / 0.15)' : 'transparent',
-                            color: theme === t.id ? 'rgb(var(--accent))' : 'rgb(var(--text-secondary) / 0.5)',
-                            border: theme === t.id ? '1px solid rgb(var(--accent) / 0.25)' : '1px solid rgb(var(--border) / 0.1)',
-                          }}
-                        >
-                          {t.name}
-                        </button>
-                      ))}
+            <AnimatePresence>
+              {mobileThemeOpen && (
+                <>
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    className="fixed inset-0 z-40"
+                    onClick={() => setMobileThemeOpen(false)}
+                  />
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.95, y: -10 }}
+                    animate={{ opacity: 1, scale: 1, y: 0 }}
+                    exit={{ opacity: 0, scale: 0.95, y: -10 }}
+                    className="absolute left-1/2 -translate-x-1/2 top-full mt-2 w-[280px] z-50 p-4 rounded-2xl"
+                    style={{
+                      background: 'rgb(var(--bg-secondary))',
+                      border: '1px solid rgb(var(--border) / 0.2)',
+                      boxShadow: '0 20px 40px rgba(0,0,0,0.3), 0 0 0 1px rgb(var(--accent) / 0.1)',
+                      backdropFilter: 'blur(10px)',
+                    }}
+                  >
+                    <div className="space-y-4">
+                      <div>
+                        <p className="text-[8px] uppercase tracking-[0.2em] mb-2 font-bold opacity-30">The Realm</p>
+                        <div className="grid grid-cols-2 gap-1.5">
+                          {THEMES.map(t => (
+                            <button
+                              key={t.id}
+                              onClick={() => { setTheme(t.id as ThemeId); setMobileThemeOpen(false); }}
+                              className="px-2 py-2 text-[9px] font-medium cursor-pointer transition-all rounded-lg text-left flex items-center gap-2"
+                              style={{
+                                background: theme === t.id ? 'rgb(var(--accent) / 0.1)' : 'rgb(var(--surface) / 0.3)',
+                                color: theme === t.id ? 'rgb(var(--accent))' : 'rgb(var(--text-secondary) / 0.6)',
+                                border: theme === t.id ? '1px solid rgb(var(--accent) / 0.3)' : '1px solid transparent',
+                              }}
+                            >
+                              <div className="w-1.5 h-1.5 rounded-full" style={{ background: theme === t.id ? 'rgb(var(--accent))' : 'rgb(var(--text-secondary) / 0.2)' }} />
+                              {t.name}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                      <div style={{ borderTop: '1px solid rgb(var(--border) / 0.1)', paddingTop: '12px' }}>
+                        <p className="text-[8px] uppercase tracking-[0.2em] mb-2 font-bold opacity-30">The View</p>
+                        <div className="flex flex-wrap gap-1.5">
+                          {LAYOUTS.map(l => (
+                            <button
+                              key={l.id}
+                              onClick={() => { setLayout(l.id as LayoutId); setMobileThemeOpen(false); }}
+                              className="px-3 py-1.5 text-[9px] font-medium cursor-pointer transition-all rounded-lg"
+                              style={{
+                                background: layout === l.id ? 'rgb(var(--accent) / 0.1)' : 'rgb(var(--surface) / 0.3)',
+                                color: layout === l.id ? 'rgb(var(--accent))' : 'rgb(var(--text-secondary) / 0.6)',
+                                border: layout === l.id ? '1px solid rgb(var(--accent) / 0.3)' : '1px solid transparent',
+                              }}
+                            >
+                              {l.name}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                  <div>
-                    <p className="text-[8px] uppercase tracking-[0.2em] mb-2" style={{ color: 'rgb(var(--text-secondary) / 0.3)' }}>Layout</p>
-                    <div className="flex gap-1">
-                      {LAYOUTS.map(l => (
-                        <button
-                          key={l.id}
-                          onClick={() => { setLayout(l.id as LayoutId); setMobileThemeOpen(false); }}
-                          className="px-2.5 py-1 text-[9px] font-medium cursor-pointer transition-colors rounded"
-                          style={{
-                            background: layout === l.id ? 'rgb(var(--accent) / 0.15)' : 'transparent',
-                            color: layout === l.id ? 'rgb(var(--accent))' : 'rgb(var(--text-secondary) / 0.5)',
-                            border: layout === l.id ? '1px solid rgb(var(--accent) / 0.25)' : '1px solid rgb(var(--border) / 0.1)',
-                          }}
-                        >
-                          {l.name}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
+                  </motion.div>
+                </>
+              )}
+            </AnimatePresence>
+          </div>
         </div>
       </div>
 

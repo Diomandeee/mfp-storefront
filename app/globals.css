@@ -33,9 +33,17 @@
   --font-body: 'Cormorant Garamond', serif;
   --grain-opacity: 0.04;
   --glow-color: 212 175 55;
+  
+  /* Behavioral Defaults */
+  --radius-card: 12px;
+  --radius-btn: 4px;
+  --hover-transform: translateY(-4px);
+  --hover-shadow: 0 12px 30px rgb(var(--accent) / 0.15);
+  --btn-border: 1px solid rgb(var(--accent));
+  --texture-opacity: 0.04;
 }
 
-/* Theme 2: Moonlit Oracle */
+/* Theme 2: Moonlit Oracle — ethereal, italic, soft glow */
 [data-theme="moonlit"] {
   --bg-primary: 10 15 26;
   --bg-secondary: 16 22 38;
@@ -53,9 +61,15 @@
   --font-body: 'Cormorant Garamond', serif;
   --grain-opacity: 0.03;
   --glow-color: 140 160 220;
+  
+  --radius-card: 16px;
+  --radius-btn: 999px;
+  --hover-transform: translateY(-6px) scale(1.01);
+  --hover-shadow: 0 0 25px rgb(var(--glow-color) / 0.15);
+  --btn-border: 1px solid rgb(var(--accent) / 0.3);
 }
 
-/* Theme 3: Ember Wisdom */
+/* Theme 3: Ember Wisdom — warm, sharp, heavy bottom */
 [data-theme="ember"] {
   --bg-primary: 26 14 6;
   --bg-secondary: 36 22 10;
@@ -73,9 +87,16 @@
   --font-body: 'Playfair Display', serif;
   --grain-opacity: 0.06;
   --glow-color: 232 163 23;
+  
+  --radius-card: 8px;
+  --radius-btn: 2px;
+  --hover-transform: rotate(-0.5deg) scale(1.02);
+  --hover-shadow: 4px 4px 0 rgb(var(--accent) / 0.2);
+  --btn-border: 1px solid rgb(var(--accent));
+  --btn-shadow: 0 4px 0 rgb(var(--accent-dim) / 0.4);
 }
 
-/* Theme 4: Crystal Seer */
+/* Theme 4: Crystal Seer — prismatic, geometric, clip-path */
 [data-theme="crystal"] {
   --bg-primary: 18 0 36;
   --bg-secondary: 26 6 50;
@@ -93,9 +114,15 @@
   --font-body: 'Space Grotesk', sans-serif;
   --grain-opacity: 0.03;
   --glow-color: 167 139 250;
+  
+  --radius-card: 4px;
+  --radius-btn: 0px;
+  --hover-transform: scale(1.05);
+  --hover-shadow: 0 0 30px rgb(var(--accent) / 0.3);
+  --btn-border: 1px solid rgb(var(--accent));
 }
 
-/* Theme 5: Forest Oracle */
+/* Theme 5: Forest Oracle — organic, very round */
 [data-theme="forest"] {
   --bg-primary: 10 26 15;
   --bg-secondary: 14 36 22;
@@ -113,9 +140,15 @@
   --font-body: 'Merriweather', serif;
   --grain-opacity: 0.04;
   --glow-color: 52 211 153;
+  
+  --radius-card: 24px;
+  --radius-btn: 999px;
+  --hover-transform: translateY(-8px);
+  --hover-shadow: 0 20px 40px rgb(var(--accent) / 0.1);
+  --btn-border: 2px solid rgb(var(--accent) / 0.2);
 }
 
-/* Theme 6: Desert Prophet */
+/* Theme 6: Desert Prophet — weathered, minimal, slide */
 [data-theme="desert"] {
   --bg-primary: 26 21 16;
   --bg-secondary: 36 30 22;
@@ -133,9 +166,15 @@
   --font-body: 'Libre Baskerville', serif;
   --grain-opacity: 0.07;
   --glow-color: 194 133 90;
+  
+  --radius-card: 2px;
+  --radius-btn: 0px;
+  --hover-transform: translateX(8px);
+  --hover-shadow: -8px 0 0 rgb(var(--accent) / 0.25);
+  --btn-border: 2px solid rgb(var(--accent));
 }
 
-/* Theme 7: Arctic Rune */
+/* Theme 7: Arctic Rune — crisp, cold, tilt */
 [data-theme="arctic"] {
   --bg-primary: 13 21 32;
   --bg-secondary: 18 28 42;
@@ -153,9 +192,15 @@
   --font-body: 'Inter', sans-serif;
   --grain-opacity: 0.02;
   --glow-color: 125 211 252;
+  
+  --radius-card: 0px;
+  --radius-btn: 0px;
+  --hover-transform: perspective(1000px) rotateX(2deg);
+  --hover-shadow: 0 0 0 2px rgb(var(--accent) / 0.3);
+  --btn-border: 1px solid rgb(var(--accent));
 }
 
-/* Theme 8: Cosmic Deck */
+/* Theme 8: Cosmic Deck — floating, playful, multi-glow */
 [data-theme="cosmic"] {
   --bg-primary: 8 0 18;
   --bg-secondary: 14 4 30;
@@ -173,9 +218,15 @@
   --font-body: 'Syne', sans-serif;
   --grain-opacity: 0.03;
   --glow-color: 244 114 182;
+  
+  --radius-card: 14px;
+  --radius-btn: 14px;
+  --hover-transform: rotate(1deg) scale(1.03);
+  --hover-shadow: 0 0 40px rgb(var(--accent) / 0.2), 0 0 80px rgb(167 139 250 / 0.1);
+  --btn-border: none;
 }
 
-/* Theme 9: Blood Ink */
+/* Theme 9: Blood Ink — brutalist, sharp, no radius */
 [data-theme="blood"] {
   --bg-primary: 10 0 0;
   --bg-secondary: 18 4 4;
@@ -191,11 +242,17 @@
   --border: 220 38 38;
   --font-heading: 'Bitter', serif;
   --font-body: 'Bitter', serif;
-  --grain-opacity: 0.05;
+  --grain-opacity: 0.1;
   --glow-color: 220 38 38;
+  
+  --radius-card: 0px;
+  --radius-btn: 0px;
+  --hover-transform: translate(-4px, -4px);
+  --hover-shadow: 8px 8px 0 #dc2626;
+  --btn-border: 2px solid #dc2626;
 }
 
-/* Theme 10: Dawn Light */
+/* Theme 10: Dawn Light — soft, airy, generous */
 [data-theme="dawn"] {
   --bg-primary: 253 248 240;
   --bg-secondary: 245 238 225;
@@ -213,6 +270,12 @@
   --font-body: 'Jost', sans-serif;
   --grain-opacity: 0.02;
   --glow-color: 184 134 11;
+  
+  --radius-card: 24px;
+  --radius-btn: 999px;
+  --hover-transform: translateY(-4px);
+  --hover-shadow: 0 10px 25px rgb(var(--accent) / 0.1);
+  --btn-border: 1px solid rgb(var(--accent) / 0.2);
 }
 
 /* ============================================
@@ -276,6 +339,100 @@ h1, h2, h3, h4, h5, h6 {
 
 ::-webkit-scrollbar-thumb:hover {
   background: rgb(var(--accent) / 0.5);
+}
+
+/* ============================================
+   Buttons & Actions
+   ============================================ */
+
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 1.5rem;
+  font-family: var(--font-heading);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  background: rgb(var(--accent));
+  color: rgb(var(--bg-primary));
+  border-radius: var(--radius-btn);
+  border: var(--btn-border);
+  box-shadow: var(--btn-shadow, none);
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgb(var(--accent) / 0.2);
+  filter: brightness(1.1);
+}
+
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 1.5rem;
+  font-family: var(--font-heading);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  transition: all 0.3s ease;
+  background: transparent;
+  color: rgb(var(--text-primary));
+  border-radius: var(--radius-btn);
+  border: 1px solid rgb(var(--border) / 0.3);
+  cursor: pointer;
+}
+
+.btn-secondary:hover {
+  background: rgb(var(--accent) / 0.05);
+  border-color: rgb(var(--accent));
+}
+
+/* ============================================
+   Card & Oracle Components
+   ============================================ */
+
+.card-oracle {
+  position: relative;
+  background: rgb(var(--surface));
+  border: 1px solid rgb(var(--border) / 0.1);
+  border-radius: var(--radius-card);
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+}
+
+.card-oracle:hover {
+  transform: var(--hover-transform);
+  box-shadow: var(--hover-shadow);
+  border-color: rgb(var(--border) / 0.3);
+}
+
+/* Crystal Seer — Clip Path for buttons */
+[data-theme="crystal"] .btn-primary {
+  clip-path: polygon(10% 0, 100% 0, 90% 100%, 0 100%);
+}
+
+/* Cosmic Deck — Linear Gradient for buttons */
+[data-theme="cosmic"] .btn-primary {
+  background: linear-gradient(135deg, rgb(var(--accent)), rgb(167 139 250));
+}
+
+/* Blood Ink — Strike through on hover */
+[data-theme="blood"] .card-oracle:hover::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background: #dc2626;
 }
 
 /* ============================================
@@ -429,6 +586,10 @@ h1, h2, h3, h4, h5, h6 {
 /* Per-Theme Grain & Texture Overlays */
 [data-theme="blood"] body::before { background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.2' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E"); }
 [data-theme="desert"] body::before { background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.6' numOctaves='6' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E"); }
+[data-theme="dawn"] body::before { 
+  opacity: 0.05;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='paper'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.04' numOctaves='5' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 0.4 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23paper)'/%3E%3C/svg%3E");
+}
 [data-theme="arctic"] body::before { opacity: 0.015; }
 
 /* Blood Ink — Scanline overlay */
@@ -444,6 +605,22 @@ h1, h2, h3, h4, h5, h6 {
     transparent 2px,
     rgba(220,38,38,0.015) 2px,
     rgba(220,38,38,0.015) 4px
+  );
+}
+
+/* Crystal Seer — Scanline overlay (subtle blue) */
+[data-theme="crystal"] body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9998;
+  background: repeating-linear-gradient(
+    90deg,
+    transparent,
+    transparent 1px,
+    rgba(34,211,238,0.005) 1px,
+    rgba(34,211,238,0.005) 2px
   );
 }
 
