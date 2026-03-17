@@ -8,7 +8,12 @@ import type { ShopifyProduct } from '../lib/shopify';
 import { useCart } from '../lib/cart-context';
 import { useTheme } from '../lib/theme-context';
 
-const PRODUCT_DETAILS: Record<string, { tagline: string; features: string[]; fallbackImage: string }> = {
+type ProductKey = 'booster' | 'chapter' | 'oracle' | 'display';
+type FallbackProduct = { title: string; handle: ProductKey; price: string; key: ProductKey };
+
+const PRODUCT_KEYS: readonly ProductKey[] = ['booster', 'chapter', 'oracle', 'display'];
+
+const PRODUCT_DETAILS: Record<ProductKey, { tagline: string; features: string[]; fallbackImage: string }> = {
   'booster': {
     tagline: '5 random oracle cards. Open the unknown.',
     features: ['5 random cards', 'Mixed rarities', 'NFC-enabled', 'Surprise triptych fragments'],
@@ -31,15 +36,22 @@ const PRODUCT_DETAILS: Record<string, { tagline: string; features: string[]; fal
   },
 };
 
-function getProductKey(handle: string): string {
-  if (handle.includes('booster')) return 'booster';
-  if (handle.includes('chapter')) return 'chapter';
-  if (handle.includes('oracle')) return 'oracle';
-  if (handle.includes('display')) return 'display';
-  return 'oracle';
+function getProductKey(handle: string): ProductKey {
+  const normalizedHandle = handle.toLowerCase();
+  const matchedKey = PRODUCT_KEYS.find((key) => normalizedHandle.includes(key));
+
+  switch (matchedKey) {
+    case 'booster':
+    case 'chapter':
+    case 'oracle':
+    case 'display':
+      return matchedKey;
+    default:
+      return 'oracle';
+  }
 }
 
-const FALLBACK_PRODUCTS = [
+const FALLBACK_PRODUCTS: readonly FallbackProduct[] = [
   { title: 'Booster Pack', handle: 'booster', price: '$15.00', key: 'booster' },
   { title: 'Chapter Pack', handle: 'chapter', price: '$25.00', key: 'chapter' },
   { title: 'Oracle Deck', handle: 'oracle', price: '$39.99', key: 'oracle' },
@@ -57,7 +69,7 @@ interface ProductCardProps {
 
 function ClassicProductCard({ product, index, onAdd, isLoading }: ProductCardProps) {
   const key = getProductKey(product.handle);
-  const details = PRODUCT_DETAILS[key] || PRODUCT_DETAILS['oracle'];
+  const details = PRODUCT_DETAILS[key];
   const img = product.images.edges[0]?.node;
   const variant = product.variants.edges[0]?.node;
   const price = formatPrice(product.priceRange.minVariantPrice.amount, product.priceRange.minVariantPrice.currencyCode);
@@ -105,7 +117,7 @@ function ClassicProductCard({ product, index, onAdd, isLoading }: ProductCardPro
 
 function CodexProductCard({ product, index, onAdd, isLoading }: ProductCardProps) {
   const key = getProductKey(product.handle);
-  const details = PRODUCT_DETAILS[key] || PRODUCT_DETAILS['oracle'];
+  const details = PRODUCT_DETAILS[key];
   const img = product.images.edges[0]?.node;
   const variant = product.variants.edges[0]?.node;
   const price = formatPrice(product.priceRange.minVariantPrice.amount, product.priceRange.minVariantPrice.currencyCode);
@@ -152,7 +164,7 @@ function CodexProductCard({ product, index, onAdd, isLoading }: ProductCardProps
 
 function MinimalProductCard({ product, index, onAdd, isLoading }: ProductCardProps) {
   const key = getProductKey(product.handle);
-  const details = PRODUCT_DETAILS[key] || PRODUCT_DETAILS['oracle'];
+  const details = PRODUCT_DETAILS[key];
   const img = product.images.edges[0]?.node;
   const variant = product.variants.edges[0]?.node;
   const price = formatPrice(product.priceRange.minVariantPrice.amount, product.priceRange.minVariantPrice.currencyCode);
@@ -189,7 +201,7 @@ function MinimalProductCard({ product, index, onAdd, isLoading }: ProductCardPro
 
 /* ===== Fallback product card ===== */
 
-function FallbackProductCard({ fp, index, layout }: { fp: typeof FALLBACK_PRODUCTS[0]; index: number; layout: string }) {
+function FallbackProductCard({ fp, index, layout }: { fp: FallbackProduct; index: number; layout: string }) {
   const details = PRODUCT_DETAILS[fp.key];
   const isCodex = layout === 'codex';
 
@@ -239,16 +251,31 @@ export default function ProductsSection() {
   const { layout } = useTheme();
 
   useEffect(() => {
-    getProducts()
-      .then(setProducts)
-      .catch(() => setError(true))
-      .finally(() => setLoading(false));
+    const controller = new AbortController();
+
+    getProducts(controller.signal)
+      .then((nextProducts) => {
+        setProducts(nextProducts);
+      })
+      .catch((err: unknown) => {
+        if (err instanceof Error && err.name === 'AbortError') return;
+        setError(true);
+      })
+      .finally(() => {
+        if (!controller.signal.aborted) {
+          setLoading(false);
+        }
+      });
+
+    return () => {
+      controller.abort();
+    };
   }, []);
 
   const gridClass =
     layout === 'codex' ? 'flex flex-col max-w-3xl mx-auto'
     : layout === 'minimal' ? 'grid grid-cols-1 sm:grid-cols-2 gap-10 max-w-3xl mx-auto'
-    : layout === 'gallery' ? 'grid grid-cols-2 lg:grid-cols-4 gap-4'
+    : layout === 'gallery' ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4'
     : layout === 'triptych' ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6'
     : 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6';
 

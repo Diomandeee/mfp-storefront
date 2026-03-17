@@ -2,6 +2,18 @@ import type { Metadata } from 'next';
 import './globals.css';
 import { ThemeProvider } from './lib/theme-context';
 import { CartProvider } from './lib/cart-context';
+import { 
+  cinzel, 
+  cormorantGaramond, 
+  playfairDisplay, 
+  spaceGrotesk, 
+  merriweather, 
+  libreBaskerville, 
+  inter, 
+  syne, 
+  bitter, 
+  jost 
+} from './fonts';
 
 export const metadata: Metadata = {
   title: 'Meaning Full Power | 45 Oracle Cards, 15 Chapters, One Journey',
@@ -22,7 +34,21 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body style={{ background: 'rgb(var(--bg-primary))', color: 'rgb(var(--text-body))', minHeight: '100vh' }}>
+      <body 
+        className={`
+          ${cinzel.variable} 
+          ${cormorantGaramond.variable} 
+          ${playfairDisplay.variable} 
+          ${spaceGrotesk.variable} 
+          ${merriweather.variable} 
+          ${libreBaskerville.variable} 
+          ${inter.variable} 
+          ${syne.variable} 
+          ${bitter.variable} 
+          ${jost.variable}
+        `}
+        style={{ background: 'rgb(var(--bg-primary))', color: 'rgb(var(--text-body))', minHeight: '100vh' }}
+      >
         <ThemeProvider>
           <CartProvider>{children}</CartProvider>
         </ThemeProvider>

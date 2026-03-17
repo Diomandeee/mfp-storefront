@@ -1,6 +1,6 @@
 'use client';
 
-import React, { createContext, useContext, useState, useCallback } from 'react';
+import React, { createContext, useContext, useState, useCallback, useRef } from 'react';
 import type { ShopifyCart } from './shopify';
 import { createCart, addToCart, removeFromCart } from './shopify';
 
@@ -8,6 +8,7 @@ interface CartContextType {
   cart: ShopifyCart | null;
   isOpen: boolean;
   isLoading: boolean;
+  error: string | null;
   openCart: () => void;
   closeCart: () => void;
   addItem: (variantId: string, quantity?: number) => Promise<void>;
@@ -20,43 +21,57 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const [cart, setCart] = useState<ShopifyCart | null>(null);
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const cartRef = useRef<ShopifyCart | null>(null);
+
+  const commitCart = useCallback((nextCart: ShopifyCart | null) => {
+    cartRef.current = nextCart;
+    setCart(nextCart);
+  }, []);
 
   const openCart = useCallback(() => setIsOpen(true), []);
   const closeCart = useCallback(() => setIsOpen(false), []);
 
   const addItem = useCallback(async (variantId: string, quantity = 1) => {
     setIsLoading(true);
+    setError(null);
+    const currentCart = cartRef.current;
+
     try {
-      if (cart) {
-        const updated = await addToCart(cart.id, variantId, quantity);
-        setCart(updated);
-      } else {
-        const newCart = await createCart(variantId, quantity);
-        setCart(newCart);
-      }
+      const nextCart = currentCart
+        ? await addToCart(currentCart.id, variantId, quantity)
+        : await createCart(variantId, quantity);
+
+      commitCart(nextCart);
       setIsOpen(true);
     } catch (err) {
       console.error('Failed to add to cart:', err);
+      setError(err instanceof Error ? err.message : 'Failed to add item to cart.');
     } finally {
       setIsLoading(false);
     }
-  }, [cart]);
+  }, [commitCart]);
 
   const removeItem = useCallback(async (lineId: string) => {
-    if (!cart) return;
+    const currentCart = cartRef.current;
+    if (!currentCart) return;
+
     setIsLoading(true);
+    setError(null);
+
     try {
-      const updated = await removeFromCart(cart.id, lineId);
-      setCart(updated);
+      const updated = await removeFromCart(currentCart.id, lineId);
+      commitCart(updated);
     } catch (err) {
       console.error('Failed to remove from cart:', err);
+      setError(err instanceof Error ? err.message : 'Failed to remove item from cart.');
     } finally {
       setIsLoading(false);
     }
-  }, [cart]);
+  }, [commitCart]);
 
   return (
-    <CartContext.Provider value={{ cart, isOpen, isLoading, openCart, closeCart, addItem, removeItem }}>
+    <CartContext.Provider value={{ cart, isOpen, isLoading, error, openCart, closeCart, addItem, removeItem }}>
       {children}
     </CartContext.Provider>
   );

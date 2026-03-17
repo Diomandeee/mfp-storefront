@@ -81,7 +81,11 @@ export interface ShopifyCart {
   };
 }
 
-async function shopifyFetch<T>(query: string, variables?: Record<string, unknown>): Promise<T> {
+async function shopifyFetch<T>(
+  query: string,
+  variables?: Record<string, unknown>,
+  signal?: AbortSignal,
+): Promise<T> {
   const res = await fetch(endpoint, {
     method: 'POST',
     headers: {
@@ -89,6 +93,7 @@ async function shopifyFetch<T>(query: string, variables?: Record<string, unknown
       'X-Shopify-Storefront-Access-Token': STOREFRONT_TOKEN,
     },
     body: JSON.stringify({ query, variables }),
+    signal,
   });
 
   const json = await res.json();
@@ -101,7 +106,7 @@ async function shopifyFetch<T>(query: string, variables?: Record<string, unknown
   return json.data;
 }
 
-export async function getProducts(): Promise<ShopifyProduct[]> {
+export async function getProducts(signal?: AbortSignal): Promise<ShopifyProduct[]> {
   const data = await shopifyFetch<{
     products: { edges: Array<{ node: ShopifyProduct }> };
   }>(`
@@ -147,7 +152,7 @@ export async function getProducts(): Promise<ShopifyProduct[]> {
         }
       }
     }
-  `);
+  `, undefined, signal);
 
   return data.products.edges.map((e) => e.node);
 }
@@ -319,8 +324,11 @@ export async function removeFromCart(cartId: string, lineId: string): Promise<Sh
 }
 
 export function formatPrice(amount: string, currency: string = 'USD'): string {
+  const parsedAmount = parseFloat(amount);
+  if (Number.isNaN(parsedAmount)) return '$0.00';
+
   return new Intl.NumberFormat('en-US', {
     style: 'currency',
     currency,
-  }).format(parseFloat(amount));
+  }).format(parsedAmount);
 }

@@ -46,6 +46,8 @@ function CardArtwork({
       src={`/cards/${card.id}.png`}
       alt={alt || `${card.name} — ${card.chapter_title}`}
       loading="lazy"
+      width={280}
+      height={464}
       className={`block h-auto w-full ${className}`.trim()}
       style={{
         filter: 'drop-shadow(0 18px 28px rgb(0 0 0 / 0.32))',
@@ -418,7 +420,7 @@ function FilterBar({
 
 function ClassicGrid({ cards, onSelect }: { cards: Card[]; onSelect: (card: Card) => void }) {
   return (
-    <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5">
+    <div className="grid grid-cols-2 gap-4 sm:gap-6 lg:grid-cols-4 xl:grid-cols-5">
       <AnimatePresence mode="popLayout">
         {cards.map((card) => (
           <motion.button
@@ -629,7 +631,7 @@ function TriptychGrid({ cards, onSelect }: { cards: Card[]; onSelect: (card: Car
               </p>
             </div>
 
-            <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+            <div className="grid grid-cols-2 gap-4 md:gap-6 md:grid-cols-3">
               {chapterCards.map((card) => (
                 <motion.button
                   key={card.id}
