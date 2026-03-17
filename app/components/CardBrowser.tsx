@@ -35,13 +35,19 @@ function CardArtwork({
   alt,
   className = '',
   style,
+  interactive = false,
 }: {
   card: Card;
   alt?: string;
   className?: string;
   style?: CSSProperties;
+  interactive?: boolean;
 }) {
-  return (
+  const baseFilter = style?.filter || 'drop-shadow(0 18px 28px rgb(0 0 0 / 0.32))';
+  const imageStyle = { ...style };
+  delete imageStyle.filter;
+
+  const image = (
     <img
       src={`/cards/${card.id}.png`}
       alt={alt || `${card.name} — ${card.chapter_title}`}
@@ -49,11 +55,27 @@ function CardArtwork({
       width={280}
       height={464}
       className={`block h-auto w-full ${className}`.trim()}
-      style={{
-        filter: 'drop-shadow(0 18px 28px rgb(0 0 0 / 0.32))',
-        ...style,
-      }}
+      style={interactive ? imageStyle : { filter: baseFilter, ...imageStyle }}
     />
+  );
+
+  if (!interactive) return image;
+
+  return (
+    <motion.div
+      className="w-full"
+      style={{ filter: baseFilter }}
+      whileHover={{
+        filter: [
+          baseFilter,
+          `${baseFilter} drop-shadow(0 0 18px ${card.theme_color}88) drop-shadow(0 0 46px ${card.theme_color}36)`,
+          `${baseFilter} drop-shadow(0 0 14px ${card.theme_color}72) drop-shadow(0 0 30px ${card.theme_color}28)`,
+        ],
+      }}
+      transition={{ duration: 0.55, times: [0, 0.45, 1], ease: 'easeOut' }}
+    >
+      {image}
+    </motion.div>
   );
 }
 
@@ -447,7 +469,7 @@ function ClassicGrid({ cards, onSelect }: { cards: Card[]; onSelect: (card: Card
             onClick={() => onSelect(card)}
             className="w-full bg-transparent p-0 text-left"
           >
-            <CardArtwork card={card} />
+            <CardArtwork card={card} interactive />
             <div className="mt-3 flex items-start justify-between gap-3">
               <div>
                 <p className="font-heading text-base" style={{ color: 'rgb(var(--text-primary))' }}>
@@ -486,7 +508,7 @@ function CodexGrid({ cards, onSelect }: { cards: Card[]; onSelect: (card: Card) 
             style={{ borderBottom: '1px solid rgb(var(--border) / 0.08)' }}
           >
             <div className="w-full max-w-[120px]">
-              <CardArtwork card={card} alt={card.name} />
+              <CardArtwork card={card} alt={card.name} interactive />
             </div>
             <div className="min-w-0">
               <div className="mb-2 flex flex-wrap items-center gap-2">
@@ -548,7 +570,7 @@ function MinimalGrid({ cards, onSelect }: { cards: Card[]; onSelect: (card: Card
             onClick={() => onSelect(card)}
             className="w-full bg-transparent p-0 text-center"
           >
-            <CardArtwork card={card} />
+            <CardArtwork card={card} interactive />
             <div className="mt-4">
               <p className="font-heading text-lg" style={{ color: 'rgb(var(--text-primary))' }}>
                 {card.name}
@@ -587,6 +609,7 @@ function GalleryGrid({ cards, onSelect }: { cards: Card[]; onSelect: (card: Card
               <div className="relative">
                 <CardArtwork
                   card={card}
+                  interactive
                   className="transition-transform duration-500 group-hover:scale-[1.02]"
                   style={{ filter: 'drop-shadow(0 22px 34px rgb(0 0 0 / 0.34))' }}
                 />
@@ -663,7 +686,7 @@ function TriptychGrid({ cards, onSelect }: { cards: Card[]; onSelect: (card: Car
                   >
                     {ROLE_LABELS[card.triptych_role]}
                   </p>
-                  <CardArtwork card={card} alt={card.name} />
+                  <CardArtwork card={card} alt={card.name} interactive />
                   <div className="mt-3 flex items-start justify-between gap-3">
                     <div>
                       <p className="font-heading text-base" style={{ color: 'rgb(var(--text-primary))' }}>

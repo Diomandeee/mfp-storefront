@@ -10,6 +10,7 @@ import Testimonials from './components/Testimonials';
 import Newsletter from './components/Newsletter';
 import Footer from './components/Footer';
 import CartDrawer from './components/CartDrawer';
+import SectionReveal from './components/SectionReveal';
 import { getProducts } from './lib/shopify';
 import type { ShopifyProduct } from './lib/shopify';
 
@@ -33,29 +34,47 @@ export default async function Home() {
     <main className="pt-14">
       <Navigation />
       <CartDrawer />
-      <HeroSection />
-      <ErrorBoundary sectionName="card browser">
-        <CardBrowser />
-      </ErrorBoundary>
-      <ErrorBoundary sectionName="products section">
-        <ProductsSection initialProducts={products} />
-      </ErrorBoundary>
-      <ErrorBoundary sectionName="chapter journey">
-        <ChapterJourney />
-      </ErrorBoundary>
-      <ErrorBoundary sectionName="triptych section">
-        <TriptychSection />
-      </ErrorBoundary>
-      <ErrorBoundary sectionName="nfc bridge">
-        <NFCBridge />
-      </ErrorBoundary>
-      <ErrorBoundary sectionName="testimonials">
-        <Testimonials />
-      </ErrorBoundary>
-      <ErrorBoundary sectionName="newsletter signup">
-        <Newsletter />
-      </ErrorBoundary>
-      <Footer />
+      <SectionReveal>
+        <HeroSection />
+      </SectionReveal>
+      <SectionReveal>
+        <ErrorBoundary sectionName="card browser">
+          <CardBrowser />
+        </ErrorBoundary>
+      </SectionReveal>
+      <SectionReveal>
+        <ErrorBoundary sectionName="products section">
+          <ProductsSection initialProducts={products} />
+        </ErrorBoundary>
+      </SectionReveal>
+      <SectionReveal>
+        <ErrorBoundary sectionName="chapter journey">
+          <ChapterJourney />
+        </ErrorBoundary>
+      </SectionReveal>
+      <SectionReveal>
+        <ErrorBoundary sectionName="triptych section">
+          <TriptychSection />
+        </ErrorBoundary>
+      </SectionReveal>
+      <SectionReveal>
+        <ErrorBoundary sectionName="nfc bridge">
+          <NFCBridge />
+        </ErrorBoundary>
+      </SectionReveal>
+      <SectionReveal>
+        <ErrorBoundary sectionName="testimonials">
+          <Testimonials />
+        </ErrorBoundary>
+      </SectionReveal>
+      <SectionReveal>
+        <ErrorBoundary sectionName="newsletter signup">
+          <Newsletter />
+        </ErrorBoundary>
+      </SectionReveal>
+      <SectionReveal>
+        <Footer />
+      </SectionReveal>
     </main>
   );
 }
