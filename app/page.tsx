@@ -2,6 +2,7 @@ import dynamic from 'next/dynamic';
 import Navigation from './components/Navigation';
 import HeroSection from './components/HeroSection';
 import ProductsSection from './components/ProductsSection';
+import ErrorBoundary from './components/ErrorBoundary';
 import ChapterJourney from './components/ChapterJourney';
 import TriptychSection from './components/TriptychSection';
 import NFCBridge from './components/NFCBridge';
@@ -24,8 +25,12 @@ export default function Home() {
       <Navigation />
       <CartDrawer />
       <HeroSection />
-      <CardBrowser />
-      <ProductsSection />
+      <ErrorBoundary sectionName="card browser">
+        <CardBrowser />
+      </ErrorBoundary>
+      <ErrorBoundary sectionName="products section">
+        <ProductsSection />
+      </ErrorBoundary>
       <ChapterJourney />
       <TriptychSection />
       <NFCBridge />

@@ -4,6 +4,10 @@ const API_VERSION = '2025-01';
 
 const endpoint = `https://${SHOPIFY_DOMAIN}/api/${API_VERSION}/graphql.json`;
 
+export type ProductKey = 'booster' | 'chapter' | 'oracle' | 'display';
+
+const PRODUCT_KEYS: readonly ProductKey[] = ['booster', 'chapter', 'oracle', 'display'];
+
 export interface ShopifyProduct {
   id: string;
   title: string;
@@ -80,6 +84,63 @@ export interface ShopifyCart {
     }>;
   };
 }
+
+export function getProductKey(handle: string): ProductKey {
+  const normalizedHandle = handle.toLowerCase();
+  const matchedKey = PRODUCT_KEYS.find((key) => normalizedHandle.includes(key));
+
+  switch (matchedKey) {
+    case 'booster':
+    case 'chapter':
+    case 'oracle':
+    case 'display':
+      return matchedKey;
+    default:
+      return 'oracle';
+  }
+}
+
+const CART_SELECTION = `
+  id
+  checkoutUrl
+  totalQuantity
+  cost {
+    totalAmount {
+      amount
+      currencyCode
+    }
+  }
+  lines(first: 10) {
+    edges {
+      node {
+        id
+        quantity
+        merchandise {
+          ... on ProductVariant {
+            id
+            title
+            product {
+              title
+              handle
+              images(first: 1) {
+                edges {
+                  node {
+                    url
+                    altText
+                  }
+                }
+              }
+            }
+            price {
+              amount
+              currencyCode
+            }
+          }
+        }
+      }
+    }
+  }
+`;
 
 async function shopifyFetch<T>(
   query: string,
@@ -164,45 +225,7 @@ export async function createCart(variantId: string, quantity: number = 1): Promi
     mutation CartCreate($input: CartInput!) {
       cartCreate(input: $input) {
         cart {
-          id
-          checkoutUrl
-          totalQuantity
-          cost {
-            totalAmount {
-              amount
-              currencyCode
-            }
-          }
-          lines(first: 10) {
-            edges {
-              node {
-                id
-                quantity
-                merchandise {
-                  ... on ProductVariant {
-                    id
-                    title
-                    product {
-                      title
-                      handle
-                      images(first: 1) {
-                        edges {
-                          node {
-                            url
-                            altText
-                          }
-                        }
-                      }
-                    }
-                    price {
-                      amount
-                      currencyCode
-                    }
-                  }
-                }
-              }
-            }
-          }
+          ${CART_SELECTION}
         }
       }
     }
@@ -222,51 +245,33 @@ export async function addToCart(cartId: string, variantId: string, quantity: num
     mutation CartLinesAdd($cartId: ID!, $lines: [CartLineInput!]!) {
       cartLinesAdd(cartId: $cartId, lines: $lines) {
         cart {
-          id
-          checkoutUrl
-          totalQuantity
-          cost {
-            totalAmount {
-              amount
-              currencyCode
-            }
-          }
-          lines(first: 10) {
-            edges {
-              node {
-                id
-                quantity
-                merchandise {
-                  ... on ProductVariant {
-                    id
-                    title
-                    product {
-                      title
-                      handle
-                      images(first: 1) {
-                        edges {
-                          node {
-                            url
-                            altText
-                          }
-                        }
-                      }
-                    }
-                    price {
-                      amount
-                      currencyCode
-                    }
-                  }
-                }
-              }
-            }
-          }
+          ${CART_SELECTION}
         }
       }
     }
   `, { cartId, lines: [{ merchandiseId: variantId, quantity }] });
 
   return data.cartLinesAdd.cart;
+}
+
+export async function updateCartLineQuantity(
+  cartId: string,
+  lineId: string,
+  quantity: number,
+): Promise<ShopifyCart> {
+  const data = await shopifyFetch<{
+    cartLinesUpdate: { cart: ShopifyCart };
+  }>(`
+    mutation CartLinesUpdate($cartId: ID!, $lines: [CartLineUpdateInput!]!) {
+      cartLinesUpdate(cartId: $cartId, lines: $lines) {
+        cart {
+          ${CART_SELECTION}
+        }
+      }
+    }
+  `, { cartId, lines: [{ id: lineId, quantity }] });
+
+  return data.cartLinesUpdate.cart;
 }
 
 export async function removeFromCart(cartId: string, lineId: string): Promise<ShopifyCart> {
@@ -276,45 +281,7 @@ export async function removeFromCart(cartId: string, lineId: string): Promise<Sh
     mutation CartLinesRemove($cartId: ID!, $lineIds: [ID!]!) {
       cartLinesRemove(cartId: $cartId, lineIds: $lineIds) {
         cart {
-          id
-          checkoutUrl
-          totalQuantity
-          cost {
-            totalAmount {
-              amount
-              currencyCode
-            }
-          }
-          lines(first: 10) {
-            edges {
-              node {
-                id
-                quantity
-                merchandise {
-                  ... on ProductVariant {
-                    id
-                    title
-                    product {
-                      title
-                      handle
-                      images(first: 1) {
-                        edges {
-                          node {
-                            url
-                            altText
-                          }
-                        }
-                      }
-                    }
-                    price {
-                      amount
-                      currencyCode
-                    }
-                  }
-                }
-              }
-            }
-          }
+          ${CART_SELECTION}
         }
       }
     }

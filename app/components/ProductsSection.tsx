@@ -2,16 +2,12 @@
 
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Loader2 } from 'lucide-react';
-import { getProducts, formatPrice } from '../lib/shopify';
-import type { ShopifyProduct } from '../lib/shopify';
+import { getProducts, formatPrice, getProductKey } from '../lib/shopify';
+import type { ProductKey, ShopifyProduct } from '../lib/shopify';
 import { useCart } from '../lib/cart-context';
 import { useTheme } from '../lib/theme-context';
 
-type ProductKey = 'booster' | 'chapter' | 'oracle' | 'display';
 type FallbackProduct = { title: string; handle: ProductKey; price: string; key: ProductKey };
-
-const PRODUCT_KEYS: readonly ProductKey[] = ['booster', 'chapter', 'oracle', 'display'];
 
 const PRODUCT_DETAILS: Record<ProductKey, { tagline: string; features: string[]; fallbackImage: string }> = {
   'booster': {
@@ -35,21 +31,6 @@ const PRODUCT_DETAILS: Record<ProductKey, { tagline: string; features: string[];
     fallbackImage: '/display-box.png',
   },
 };
-
-function getProductKey(handle: string): ProductKey {
-  const normalizedHandle = handle.toLowerCase();
-  const matchedKey = PRODUCT_KEYS.find((key) => normalizedHandle.includes(key));
-
-  switch (matchedKey) {
-    case 'booster':
-    case 'chapter':
-    case 'oracle':
-    case 'display':
-      return matchedKey;
-    default:
-      return 'oracle';
-  }
-}
 
 const FALLBACK_PRODUCTS: readonly FallbackProduct[] = [
   { title: 'Booster Pack', handle: 'booster', price: '$15.00', key: 'booster' },
@@ -241,6 +222,86 @@ function FallbackProductCard({ fp, index, layout }: { fp: FallbackProduct; index
   );
 }
 
+function SkeletonTone({ className }: { className: string }) {
+  return (
+    <div
+      className={`animate-pulse ${className}`}
+      style={{ background: 'rgb(var(--text-secondary) / 0.12)' }}
+    />
+  );
+}
+
+function ProductSkeleton({ layout }: { layout: string }) {
+  if (layout === 'codex') {
+    return (
+      <div className="flex flex-col gap-6 py-8 sm:flex-row" style={{ borderBottom: '1px solid rgb(var(--border) / 0.08)' }}>
+        <SkeletonTone className="h-48 w-full rounded-lg sm:h-auto sm:w-48" />
+        <div className="flex-1">
+          <SkeletonTone className="mb-3 h-6 w-2/3 rounded-full" />
+          <SkeletonTone className="mb-2 h-4 w-full rounded-full" />
+          <SkeletonTone className="mb-6 h-4 w-4/5 rounded-full" />
+          <div className="mb-6 space-y-2">
+            <SkeletonTone className="h-3 w-2/3 rounded-full" />
+            <SkeletonTone className="h-3 w-1/2 rounded-full" />
+            <SkeletonTone className="h-3 w-3/5 rounded-full" />
+          </div>
+          <div className="flex items-center gap-6">
+            <SkeletonTone className="h-8 w-24 rounded-full" />
+            <SkeletonTone className="h-10 w-32 rounded-full" />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (layout === 'minimal') {
+    return (
+      <div className="text-center">
+        <SkeletonTone className="mb-6 aspect-[4/5] w-full rounded-2xl" />
+        <SkeletonTone className="mx-auto mb-3 h-6 w-2/3 rounded-full" />
+        <SkeletonTone className="mx-auto mb-6 h-4 w-3/4 rounded-full" />
+        <div className="flex items-center justify-center gap-6">
+          <SkeletonTone className="h-8 w-20 rounded-full" />
+          <SkeletonTone className="h-10 w-28 rounded-full" />
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div
+      className="overflow-hidden rounded-2xl"
+      style={{ background: 'rgb(var(--surface))', border: '1px solid rgb(var(--border) / 0.1)' }}
+    >
+      <SkeletonTone className="h-48 w-full" />
+      <div className="p-6">
+        <SkeletonTone className="mb-3 h-6 w-2/3 rounded-full" />
+        <SkeletonTone className="mb-2 h-4 w-full rounded-full" />
+        <SkeletonTone className="mb-6 h-4 w-4/5 rounded-full" />
+        <div className="mb-6 space-y-2">
+          <SkeletonTone className="h-3 w-3/4 rounded-full" />
+          <SkeletonTone className="h-3 w-2/3 rounded-full" />
+          <SkeletonTone className="h-3 w-1/2 rounded-full" />
+        </div>
+        <div className="flex items-center justify-between">
+          <SkeletonTone className="h-8 w-20 rounded-full" />
+          <SkeletonTone className="h-10 w-28 rounded-full" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ProductsSkeleton({ layout, gridClass }: { layout: string; gridClass: string }) {
+  return (
+    <div className={gridClass}>
+      {Array.from({ length: 4 }).map((_, index) => (
+        <ProductSkeleton key={index} layout={layout} />
+      ))}
+    </div>
+  );
+}
+
 /* ===== Main Component ===== */
 
 export default function ProductsSection() {
@@ -300,9 +361,7 @@ export default function ProductsSection() {
       </div>
 
       {loading ? (
-        <div className="flex justify-center py-16">
-          <Loader2 size={24} className="animate-spin" style={{ color: 'rgb(var(--accent) / 0.3)' }} />
-        </div>
+        <ProductsSkeleton layout={layout} gridClass={gridClass} />
       ) : (
         <div className={gridClass}>
           {(products.length > 0 ? products : []).map((product, i) => (

@@ -6,7 +6,7 @@ import { useCart } from '../lib/cart-context';
 import { formatPrice } from '../lib/shopify';
 
 export default function CartDrawer() {
-  const { cart, isOpen, isLoading, closeCart, removeItem } = useCart();
+  const { cart, isOpen, isLoading, closeCart, removeItem, updateItemQuantity } = useCart();
 
   const lines = cart?.lines?.edges?.map(e => e.node) || [];
 
@@ -96,9 +96,38 @@ export default function CartDrawer() {
                           <p className="text-sm font-heading truncate" style={{ color: 'rgb(var(--text-primary))' }}>
                             {line.merchandise.product.title}
                           </p>
-                          <p className="text-xs mt-1" style={{ color: 'rgb(var(--text-secondary))' }}>
-                            Qty: {line.quantity}
-                          </p>
+                          <div className="mt-2 inline-flex items-center gap-2 rounded-full px-2 py-1" style={{ background: 'rgb(var(--bg-primary) / 0.45)' }}>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                if (line.quantity <= 1) {
+                                  removeItem(line.id);
+                                  return;
+                                }
+
+                                updateItemQuantity(line.id, line.quantity - 1);
+                              }}
+                              disabled={isLoading}
+                              className="flex h-6 w-6 items-center justify-center rounded-full disabled:opacity-50"
+                              style={{ color: 'rgb(var(--text-primary))' }}
+                              aria-label={`Decrease quantity of ${line.merchandise.product.title}`}
+                            >
+                              <Minus size={12} />
+                            </button>
+                            <span className="min-w-5 text-center text-xs font-heading" style={{ color: 'rgb(var(--text-primary))' }}>
+                              {line.quantity}
+                            </span>
+                            <button
+                              type="button"
+                              onClick={() => updateItemQuantity(line.id, line.quantity + 1)}
+                              disabled={isLoading}
+                              className="flex h-6 w-6 items-center justify-center rounded-full disabled:opacity-50"
+                              style={{ color: 'rgb(var(--text-primary))' }}
+                              aria-label={`Increase quantity of ${line.merchandise.product.title}`}
+                            >
+                              <Plus size={12} />
+                            </button>
+                          </div>
                           <p className="text-sm mt-1 font-heading" style={{ color: 'rgb(var(--accent))' }}>
                             {formatPrice(line.merchandise.price.amount, line.merchandise.price.currencyCode)}
                           </p>
