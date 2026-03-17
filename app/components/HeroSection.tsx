@@ -192,21 +192,18 @@ function RitualHero({
       />
 
       <div className="relative z-10 mx-auto max-w-5xl text-center">
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, delay: 0.15 }}
-          className="mb-8 inline-flex items-center gap-3"
+        <div
+          className="mb-8 inline-flex items-center gap-3 animate-[fadeIn_0.7s_ease-out_0.15s_both]"
         >
           <div className="h-px w-12" style={{ background: 'rgb(var(--accent) / 0.3)' }} />
           <span className="text-[10px] tracking-[0.45em] uppercase font-heading section-eyebrow" style={{ color: 'rgb(var(--accent) / 0.62)' }}>
             Oracle Card Game
           </span>
           <div className="h-px w-12" style={{ background: 'rgb(var(--accent) / 0.3)' }} />
-        </motion.div>
+        </div>
 
         <h1
-          className="font-heading text-4xl leading-tight sm:text-6xl md:text-7xl"
+          className="font-heading text-4xl leading-tight sm:text-6xl md:text-7xl animate-[fadeIn_0.6s_ease-out]"
           style={{ color: 'rgb(var(--text-primary))' }}
         >
           {content.taglinePre}{' '}

@@ -34,9 +34,7 @@ export default async function Home() {
     <main className="pt-14">
       <Navigation />
       <CartDrawer />
-      <SectionReveal>
-        <HeroSection />
-      </SectionReveal>
+      <HeroSection />
       <SectionReveal>
         <ErrorBoundary sectionName="card browser">
           <CardBrowser />

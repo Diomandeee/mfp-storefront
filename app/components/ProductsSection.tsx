@@ -14,22 +14,22 @@ const PRODUCT_DETAILS: Record<ProductKey, { tagline: string; features: string[];
   'booster': {
     tagline: '5 random oracle cards. Open the unknown.',
     features: ['5 random cards', 'Mixed rarities', 'NFC-enabled', 'Surprise triptych fragments'],
-    fallbackImage: '/booster-pack.png',
+    fallbackImage: '/booster-pack.webp',
   },
   'chapter': {
     tagline: 'Choose your chapter. Receive the complete triptych.',
     features: ['3 cards per chapter', 'Complete A/B/C triptych', 'NFC-enabled', 'Deep chapter immersion'],
-    fallbackImage: '/chapter-pack.png',
+    fallbackImage: '/chapter-pack.webp',
   },
   'oracle': {
     tagline: 'The complete 45-card oracle experience.',
     features: ['All 45 cards', 'All 15 chapters', 'Premium box', 'Complete NFC library'],
-    fallbackImage: '/oracle-deck.png',
+    fallbackImage: '/oracle-deck.webp',
   },
   'display': {
     tagline: '24 booster packs. For the devoted collector.',
     features: ['24 booster packs', '120 total cards', 'Display box', 'Collector tier'],
-    fallbackImage: '/display-box.png',
+    fallbackImage: '/display-box.webp',
   },
 };
 

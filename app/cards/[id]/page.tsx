@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { Star, Zap, ArrowLeft } from 'lucide-react';
@@ -73,11 +74,12 @@ export default async function CardDetailPage({ params }: CardPageProps) {
       >
         <div className="grid gap-10 lg:grid-cols-[minmax(0,360px)_minmax(0,1fr)] lg:gap-14">
           <div className="mx-auto w-full max-w-[360px]">
-            <img
-              src={`/cards/${card.id}.png`}
+            <Image
+              src={`/cards/${card.id}.webp`}
               alt={`${card.name} — ${card.chapter_title}`}
               width={360}
               height={596}
+              priority
               className="block h-auto w-full"
               style={{
                 filter: `drop-shadow(0 28px 44px rgb(0 0 0 / 0.34)) drop-shadow(0 0 24px ${card.theme_color}2f)`,

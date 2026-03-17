@@ -50,7 +50,7 @@ function CardArtwork({
 
   const image = (
     <img
-      src={`/cards/${card.id}.png`}
+      src={`/cards/${card.id}.webp`}
       alt={alt || `${card.name} — ${card.chapter_title}`}
       loading="lazy"
       width={280}
