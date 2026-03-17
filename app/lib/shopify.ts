@@ -149,6 +149,7 @@ async function shopifyFetch<T>(
 ): Promise<T> {
   const res = await fetch(endpoint, {
     method: 'POST',
+    next: { revalidate: 300 },
     headers: {
       'Content-Type': 'application/json',
       'X-Shopify-Storefront-Access-Token': STOREFRONT_TOKEN,
@@ -254,7 +255,7 @@ export async function addToCart(cartId: string, variantId: string, quantity: num
   return data.cartLinesAdd.cart;
 }
 
-export async function updateCartLineQuantity(
+export async function updateCartLine(
   cartId: string,
   lineId: string,
   quantity: number,

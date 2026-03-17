@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest';
 import { CARDS, CHAPTERS, getCardsByChapter } from '../lib/card-manifest';
 
 describe('card manifest', () => {

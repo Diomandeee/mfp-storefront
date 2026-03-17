@@ -1,7 +1,7 @@
 'use client';
 
 import type { CSSProperties } from 'react';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Filter, Search, Star, X, Zap } from 'lucide-react';
 import { CARDS, CHAPTERS, getCardsByChapter } from '../lib/card-manifest';
@@ -81,6 +81,15 @@ function RarityStars({ count }: { count: number }) {
 }
 
 function CardDetailModal({ card, onClose }: { card: Card; onClose: () => void }) {
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') onClose();
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [onClose]);
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -89,6 +98,8 @@ function CardDetailModal({ card, onClose }: { card: Card; onClose: () => void })
       className="fixed inset-0 z-50 flex items-center justify-center p-4"
       style={{ background: 'rgb(0 0 0 / 0.76)', backdropFilter: 'blur(10px)' }}
       onClick={onClose}
+      role="dialog"
+      aria-modal="true"
     >
       <motion.div
         initial={{ opacity: 0, scale: 0.96, y: 18 }}
@@ -102,6 +113,7 @@ function CardDetailModal({ card, onClose }: { card: Card; onClose: () => void })
           boxShadow: `0 32px 120px ${card.theme_color}28`,
         }}
         onClick={(event) => event.stopPropagation()}
+        aria-label="Card details"
       >
         <button
           type="button"
@@ -774,17 +786,16 @@ export default function CardBrowser() {
         </p>
       )}
 
-      {layout === 'codex' ? (
-        <CodexGrid cards={filteredCards} onSelect={setSelectedCard} />
-      ) : layout === 'minimal' ? (
-        <MinimalGrid cards={filteredCards} onSelect={setSelectedCard} />
-      ) : layout === 'gallery' ? (
-        <GalleryGrid cards={filteredCards} onSelect={setSelectedCard} />
-      ) : layout === 'triptych' ? (
-        <TriptychGrid cards={filteredCards} onSelect={setSelectedCard} />
-      ) : (
-        <ClassicGrid cards={filteredCards} onSelect={setSelectedCard} />
-      )}
+      {(() => {
+        const LayoutComponent = {
+          classic: ClassicGrid,
+          codex: CodexGrid,
+          minimal: MinimalGrid,
+          gallery: GalleryGrid,
+          triptych: TriptychGrid,
+        }[layout] || ClassicGrid;
+        return <LayoutComponent cards={filteredCards} onSelect={setSelectedCard} />;
+      })()}
 
       {filteredCards.length === 0 && (
         <div className="py-16 text-center">

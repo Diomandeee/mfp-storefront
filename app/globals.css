@@ -28,6 +28,8 @@
   --surface: 36 22 16;
   --surface-hover: 48 32 20;
   --border: 212 175 55;
+  --status-error: 220 38 38;
+  --status-error-soft: 248 113 113;
   --font-heading: var(--font-cinzel), serif;
   --font-body: var(--font-cormorant), serif;
   --grain-opacity: 0.04;

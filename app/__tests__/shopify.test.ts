@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest';
 import { formatPrice, getProductKey } from '../lib/shopify';
 
 describe('shopify utilities', () => {

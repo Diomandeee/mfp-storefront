@@ -4,11 +4,17 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { X, Minus, Plus, ShoppingBag } from 'lucide-react';
 import { useCart } from '../lib/cart-context';
 import { formatPrice } from '../lib/shopify';
+import FlowerOfLife from './FlowerOfLife';
 
 export default function CartDrawer() {
   const { cart, isOpen, isLoading, closeCart, removeItem, updateItemQuantity } = useCart();
 
   const lines = cart?.lines?.edges?.map(e => e.node) || [];
+
+  const scrollToProducts = () => {
+    closeCart();
+    document.getElementById('products')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
 
   return (
     <AnimatePresence>
@@ -58,17 +64,28 @@ export default function CartDrawer() {
               {lines.length === 0 ? (
                 <div className="flex flex-col items-center justify-center h-full text-center gap-4">
                   <div
-                    className="w-16 h-16 rounded-full flex items-center justify-center"
-                    style={{ background: 'rgb(var(--surface))' }}
+                    className="w-28 h-28 rounded-full flex items-center justify-center"
+                    style={{ background: 'rgb(var(--surface))', border: '1px solid rgb(var(--accent) / 0.14)' }}
                   >
-                    <ShoppingBag size={24} style={{ color: 'rgb(var(--accent) / 0.4)' }} />
+                    <FlowerOfLife size={88} className="animate-rotate-slow" />
                   </div>
-                  <p className="font-heading text-sm" style={{ color: 'rgb(var(--text-secondary))' }}>
-                    Your oracle collection awaits
+                  <p className="font-heading text-xl" style={{ color: 'rgb(var(--text-primary))' }}>
+                    Your journey begins with a single card
                   </p>
-                  <p className="text-xs" style={{ color: 'rgb(var(--text-body) / 0.5)' }}>
-                    Draw your first card from the deck below
+                  <p className="max-w-xs text-sm leading-relaxed" style={{ color: 'rgb(var(--text-body) / 0.6)' }}>
+                    Start your collection with a booster, chapter pack, or the full oracle deck.
                   </p>
+                  <button
+                    type="button"
+                    onClick={scrollToProducts}
+                    className="mt-2 rounded-full px-6 py-3 font-heading text-[11px] tracking-[0.18em] uppercase"
+                    style={{
+                      background: 'rgb(var(--accent))',
+                      color: 'rgb(var(--bg-primary))',
+                    }}
+                  >
+                    Explore Products
+                  </button>
                 </div>
               ) : (
                 <div className="flex flex-col gap-4">
@@ -96,7 +113,7 @@ export default function CartDrawer() {
                           <p className="text-sm font-heading truncate" style={{ color: 'rgb(var(--text-primary))' }}>
                             {line.merchandise.product.title}
                           </p>
-                          <div className="mt-2 inline-flex items-center gap-2 rounded-full px-2 py-1" style={{ background: 'rgb(var(--bg-primary) / 0.45)' }}>
+                          <div className="mt-2 inline-flex items-center gap-2 rounded-full px-2 py-1" style={{ background: 'rgb(var(--bg-primary) / 0.45)', border: '1px solid rgb(var(--border) / 0.14)' }}>
                             <button
                               type="button"
                               onClick={() => {
@@ -133,9 +150,11 @@ export default function CartDrawer() {
                           </p>
                         </div>
                         <button
+                          type="button"
                           onClick={() => removeItem(line.id)}
-                          className="self-start p-1 cursor-pointer"
+                          className="self-start rounded-full p-1 cursor-pointer"
                           style={{ color: 'rgb(var(--text-secondary) / 0.5)' }}
+                          aria-label={`Remove ${line.merchandise.product.title} from cart`}
                         >
                           <X size={14} />
                         </button>

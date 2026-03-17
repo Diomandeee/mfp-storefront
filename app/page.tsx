@@ -10,6 +10,8 @@ import Testimonials from './components/Testimonials';
 import Newsletter from './components/Newsletter';
 import Footer from './components/Footer';
 import CartDrawer from './components/CartDrawer';
+import { getProducts } from './lib/shopify';
+import type { ShopifyProduct } from './lib/shopify';
 
 const CardBrowser = dynamic(() => import('./components/CardBrowser'), {
   loading: () => (
@@ -19,7 +21,14 @@ const CardBrowser = dynamic(() => import('./components/CardBrowser'), {
   ),
 });
 
-export default function Home() {
+export default async function Home() {
+  let products: ShopifyProduct[] = [];
+  try {
+    products = await getProducts();
+  } catch (e) {
+    console.error('Failed to fetch products on server:', e);
+  }
+
   return (
     <main className="pt-14">
       <Navigation />
@@ -29,13 +38,23 @@ export default function Home() {
         <CardBrowser />
       </ErrorBoundary>
       <ErrorBoundary sectionName="products section">
-        <ProductsSection />
+        <ProductsSection initialProducts={products} />
       </ErrorBoundary>
-      <ChapterJourney />
-      <TriptychSection />
-      <NFCBridge />
-      <Testimonials />
-      <Newsletter />
+      <ErrorBoundary sectionName="chapter journey">
+        <ChapterJourney />
+      </ErrorBoundary>
+      <ErrorBoundary sectionName="triptych section">
+        <TriptychSection />
+      </ErrorBoundary>
+      <ErrorBoundary sectionName="nfc bridge">
+        <NFCBridge />
+      </ErrorBoundary>
+      <ErrorBoundary sectionName="testimonials">
+        <Testimonials />
+      </ErrorBoundary>
+      <ErrorBoundary sectionName="newsletter signup">
+        <Newsletter />
+      </ErrorBoundary>
       <Footer />
     </main>
   );

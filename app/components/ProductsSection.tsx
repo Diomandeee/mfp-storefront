@@ -6,6 +6,7 @@ import { getProducts, formatPrice, getProductKey } from '../lib/shopify';
 import type { ProductKey, ShopifyProduct } from '../lib/shopify';
 import { useCart } from '../lib/cart-context';
 import { useTheme } from '../lib/theme-context';
+import ProductJsonLd from './ProductJsonLd';
 
 type FallbackProduct = { title: string; handle: ProductKey; price: string; key: ProductKey };
 
@@ -48,6 +49,18 @@ interface ProductCardProps {
   isLoading: boolean;
 }
 
+function LoadingLabel() {
+  return (
+    <span className="inline-flex items-center gap-1.5" role="status" aria-live="polite">
+      <svg className="h-3 w-3 animate-spin" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" className="opacity-25" />
+        <path d="M4 12a8 8 0 0 1 8-8V0C5.373 0 0 5.373 0 12h4z" fill="currentColor" className="opacity-75" />
+      </svg>
+      Adding...
+    </span>
+  );
+}
+
 function ClassicProductCard({ product, index, onAdd, isLoading }: ProductCardProps) {
   const key = getProductKey(product.handle);
   const details = PRODUCT_DETAILS[key];
@@ -83,12 +96,14 @@ function ClassicProductCard({ product, index, onAdd, isLoading }: ProductCardPro
         <div className="flex items-center justify-between">
           <span className="font-heading text-xl" style={{ color: 'rgb(var(--accent))' }}>{price}</span>
           <button
+            type="button"
             onClick={() => variant && onAdd(variant.id)}
             disabled={isLoading || !variant?.availableForSale}
+            aria-busy={isLoading}
             className="px-5 py-2 rounded-lg font-heading text-[10px] tracking-[0.15em] uppercase cursor-pointer transition-all disabled:opacity-50 btn-primary"
             style={{ background: 'rgb(var(--accent) / 0.1)', color: 'rgb(var(--accent))', border: '1px solid rgb(var(--accent) / 0.2)' }}
           >
-            {isLoading ? 'Adding...' : 'Acquire'}
+            {isLoading ? <LoadingLabel /> : 'Acquire'}
           </button>
         </div>
       </div>
@@ -130,12 +145,14 @@ function CodexProductCard({ product, index, onAdd, isLoading }: ProductCardProps
         <div className="flex items-center gap-6">
           <span className="font-heading text-2xl" style={{ color: 'rgb(var(--accent))' }}>{price}</span>
           <button
+            type="button"
             onClick={() => variant && onAdd(variant.id)}
             disabled={isLoading || !variant?.availableForSale}
+            aria-busy={isLoading}
             className="px-6 py-2.5 font-heading text-xs tracking-[0.15em] uppercase cursor-pointer transition-all disabled:opacity-50 btn-primary"
             style={{ background: 'rgb(var(--accent) / 0.1)', color: 'rgb(var(--accent))', border: '1px solid rgb(var(--accent) / 0.2)' }}
           >
-            {isLoading ? 'Adding...' : 'Acquire'}
+            {isLoading ? <LoadingLabel /> : 'Acquire'}
           </button>
         </div>
       </div>
@@ -168,12 +185,14 @@ function MinimalProductCard({ product, index, onAdd, isLoading }: ProductCardPro
       <div className="flex items-center justify-center gap-6">
         <span className="font-heading text-xl" style={{ color: 'rgb(var(--accent))' }}>{price}</span>
         <button
+          type="button"
           onClick={() => variant && onAdd(variant.id)}
           disabled={isLoading || !variant?.availableForSale}
+          aria-busy={isLoading}
           className="px-6 py-2.5 rounded-full font-heading text-[10px] tracking-[0.15em] uppercase cursor-pointer transition-all disabled:opacity-50 btn-primary"
           style={{ background: 'rgb(var(--accent))', color: 'rgb(var(--bg-primary))' }}
         >
-          {isLoading ? 'Adding...' : 'Acquire'}
+          {isLoading ? <LoadingLabel /> : 'Acquire'}
         </button>
       </div>
     </motion.div>
@@ -304,14 +323,20 @@ function ProductsSkeleton({ layout, gridClass }: { layout: string; gridClass: st
 
 /* ===== Main Component ===== */
 
-export default function ProductsSection() {
-  const [products, setProducts] = useState<ShopifyProduct[]>([]);
-  const [loading, setLoading] = useState(true);
+interface ProductsSectionProps {
+  initialProducts?: ShopifyProduct[];
+}
+
+export default function ProductsSection({ initialProducts = [] }: ProductsSectionProps) {
+  const [products, setProducts] = useState<ShopifyProduct[]>(initialProducts);
+  const [loading, setLoading] = useState(initialProducts.length === 0);
   const [error, setError] = useState(false);
   const { addItem, isLoading } = useCart();
   const { layout } = useTheme();
 
   useEffect(() => {
+    if (initialProducts.length > 0) return;
+
     const controller = new AbortController();
 
     getProducts(controller.signal)
@@ -331,7 +356,7 @@ export default function ProductsSection() {
     return () => {
       controller.abort();
     };
-  }, []);
+  }, [initialProducts]);
 
   const gridClass =
     layout === 'codex' ? 'flex flex-col max-w-3xl mx-auto'
@@ -342,10 +367,17 @@ export default function ProductsSection() {
 
   const headerAlignment = layout === 'codex' ? 'text-left max-w-3xl mx-auto' : 'text-center';
 
-  const ProductCard = layout === 'codex' ? CodexProductCard : layout === 'minimal' ? MinimalProductCard : ClassicProductCard;
+  const ProductCard = {
+    classic: ClassicProductCard,
+    codex: CodexProductCard,
+    minimal: MinimalProductCard,
+    gallery: ClassicProductCard,
+    triptych: ClassicProductCard,
+  }[layout] || ClassicProductCard;
 
   return (
     <section id="products" className="py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+      {!loading && products.length > 0 && !error && <ProductJsonLd products={products} />}
       <div className={`section-header mb-16 ${headerAlignment}`}>
         <p className="text-[10px] tracking-[0.4em] uppercase font-heading section-eyebrow mb-3" style={{ color: 'rgb(var(--accent) / 0.5)' }}>
           {layout === 'codex' ? 'Catalogue' : 'Acquire'}
@@ -363,21 +395,36 @@ export default function ProductsSection() {
       {loading ? (
         <ProductsSkeleton layout={layout} gridClass={gridClass} />
       ) : (
-        <div className={gridClass}>
-          {(products.length > 0 ? products : []).map((product, i) => (
-            <ProductCard
-              key={product.id}
-              product={product}
-              index={i}
-              onAdd={(variantId) => addItem(variantId)}
-              isLoading={isLoading}
-            />
-          ))}
+        <>
+          {(products.length > 0 || error) && (
+            <div className={gridClass}>
+              {products.map((product, i) => (
+                <ProductCard
+                  key={product.id}
+                  product={product}
+                  index={i}
+                  onAdd={(variantId) => addItem(variantId, 1, product.title)}
+                  isLoading={isLoading}
+                />
+              ))}
 
-          {error && FALLBACK_PRODUCTS.map((fp, i) => (
-            <FallbackProductCard key={fp.key} fp={fp} index={i} layout={layout} />
-          ))}
-        </div>
+              {error && FALLBACK_PRODUCTS.map((fp, i) => (
+                <FallbackProductCard key={fp.key} fp={fp} index={i} layout={layout} />
+              ))}
+            </div>
+          )}
+
+          {!loading && products.length === 0 && !error && (
+            <div className="py-20 text-center">
+              <p className="mb-2 font-heading text-xl" style={{ color: 'rgb(var(--text-primary))' }}>
+                The oracle deck is being prepared
+              </p>
+              <p className="mx-auto max-w-md text-sm" style={{ color: 'rgb(var(--text-body) / 0.5)' }}>
+                Our collection will be available soon. Sign up below to be notified when the cards are ready.
+              </p>
+            </div>
+          )}
+        </>
       )}
     </section>
   );

@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest';
 import { LAYOUTS, THEMES } from '../lib/themes';
 
 describe('theme configuration', () => {
