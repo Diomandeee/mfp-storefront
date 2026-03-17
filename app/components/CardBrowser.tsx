@@ -436,7 +436,7 @@ function MinimalGrid({ cards, onSelect }: { cards: Card[]; onSelect: (card: Card
 
 function GalleryGrid({ cards, onSelect }: { cards: Card[]; onSelect: (card: Card) => void }) {
   return (
-    <div className="mx-auto max-w-7xl columns-1 sm:columns-2 xl:columns-3 2xl:columns-4" style={{ columnGap: '1.25rem' }}>
+    <div className="mx-auto max-w-7xl columns-2 sm:columns-2 xl:columns-3 2xl:columns-4" style={{ columnGap: '1.25rem' }}>
       <AnimatePresence mode="popLayout">
         {cards.map((card, index) => {
           const placement = GALLERY_VARIANTS[index % GALLERY_VARIANTS.length];

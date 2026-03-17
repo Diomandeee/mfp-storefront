@@ -60,11 +60,20 @@ export const metadata: Metadata = {
     url: 'https://meaningfullpower.com',
     siteName: 'Meaning Full Power',
     locale: 'en_US',
+    images: [
+      {
+        url: 'https://meaningfullpower.com/oracle-deck.webp',
+        width: 1200,
+        height: 630,
+        alt: 'Meaning Full Power Oracle Deck - 45 NFC-enabled wisdom cards',
+      },
+    ],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Meaning Full Power | 45 Oracle Cards',
     description: '45 Cards. 15 Chapters. One Journey. A premium wisdom oracle card game.',
+    images: ['https://meaningfullpower.com/oracle-deck.webp'],
   },
   robots: {
     index: true,
