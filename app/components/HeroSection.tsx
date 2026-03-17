@@ -73,306 +73,189 @@ const themeHeroContent: Record<string, {
   },
 };
 
-// Themes grouped by hero structure variant
-type HeroVariant = 'centered' | 'left-aligned' | 'split' | 'minimal-typographic' | 'brutalist';
-const THEME_VARIANT: Record<string, HeroVariant> = {
-  'sacred-gold': 'centered',
-  'moonlit': 'centered',
-  'ember': 'split',
-  'crystal': 'minimal-typographic',
-  'forest': 'centered',
-  'desert': 'left-aligned',
-  'arctic': 'minimal-typographic',
-  'cosmic': 'split',
-  'blood': 'brutalist',
-  'dawn': 'centered',
+const HERO_STATS = [
+  { value: '45', label: 'Cards' },
+  { value: '15', label: 'Chapters' },
+  { value: '05', label: 'Rarities' },
+];
+
+const EDITORIAL_NOTES: Record<string, string[]> = {
+  ember: ['Firelit chapters', 'Ritual draw flow', 'Ancient voice, modern deck'],
+  desert: ['Excavated truths', 'Fifteen stone-cut paths', 'Travel light, read deep'],
 };
 
-function CenteredHero({ content, theme }: { content: typeof themeHeroContent['sacred-gold']; theme: string }) {
-  return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-      {/* Background sacred geometry */}
-      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-        <div className="animate-rotate-slow opacity-30">
-          <FlowerOfLife size={600} />
-        </div>
-      </div>
+const SIGNAL_NOTES: Record<string, string[]> = {
+  crystal: ['Prism scan active', 'Fragments align on draw', 'Refraction exposes motive'],
+  arctic: ['Low-noise layout', 'Runic precision channel', 'Cold clarity over ornament'],
+  cosmic: ['Nebula signal lock', 'Deck telemetry live', 'Forty-five transmissions inbound'],
+};
 
-      {/* Radial gradient overlay */}
+type HeroVariant = 'ritual' | 'editorial' | 'signal' | 'manifest';
+
+const THEME_VARIANT: Record<string, HeroVariant> = {
+  'sacred-gold': 'ritual',
+  'moonlit': 'ritual',
+  'forest': 'ritual',
+  'dawn': 'ritual',
+  'ember': 'editorial',
+  'desert': 'editorial',
+  'crystal': 'signal',
+  'arctic': 'signal',
+  'cosmic': 'signal',
+  'blood': 'manifest',
+};
+
+function HeroActions({
+  align = 'start',
+  primaryLabel = 'Begin Your Journey',
+  secondaryLabel = 'Browse the Deck',
+}: {
+  align?: 'start' | 'center';
+  primaryLabel?: string;
+  secondaryLabel?: string;
+}) {
+  return (
+    <div className={`flex flex-col gap-4 sm:flex-row ${align === 'center' ? 'justify-center items-center' : 'items-start'}`}>
+      <a
+        href="#products"
+        className="inline-flex items-center gap-2 rounded-full px-7 py-3.5 font-heading text-sm tracking-[0.15em] uppercase no-underline transition-all btn-primary"
+        style={{
+          background: 'rgb(var(--accent))',
+          color: 'rgb(var(--bg-primary))',
+        }}
+      >
+        <Sparkles size={16} />
+        {primaryLabel}
+      </a>
+      <a
+        href="#cards"
+        className="inline-flex items-center rounded-full px-7 py-3.5 font-heading text-sm tracking-[0.15em] uppercase no-underline transition-all"
+        style={{
+          border: '1px solid rgb(var(--accent) / 0.28)',
+          color: 'rgb(var(--text-primary))',
+        }}
+      >
+        {secondaryLabel}
+      </a>
+    </div>
+  );
+}
+
+function ScrollCue() {
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ delay: 1.8 }}
+      className="absolute bottom-8 left-1/2 -translate-x-1/2"
+    >
+      <motion.div animate={{ y: [0, 8, 0] }} transition={{ repeat: Infinity, duration: 2 }}>
+        <ArrowDown size={16} style={{ color: 'rgb(var(--accent) / 0.35)' }} />
+      </motion.div>
+    </motion.div>
+  );
+}
+
+function RitualHero({
+  content,
+  theme,
+}: {
+  content: typeof themeHeroContent['sacred-gold'];
+  theme: string;
+}) {
+  const isDawn = theme === 'dawn';
+
+  return (
+    <section className="relative flex min-h-screen items-center justify-center overflow-hidden px-4 py-24 sm:px-6 lg:px-8">
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
-          background: `radial-gradient(ellipse at center, transparent 30%, rgb(var(--bg-primary)) 70%)`,
+          background: isDawn
+            ? 'radial-gradient(circle at 50% 20%, rgb(var(--accent) / 0.16), transparent 35%), linear-gradient(180deg, rgb(var(--bg-secondary)) 0%, rgb(var(--bg-primary)) 75%)'
+            : 'radial-gradient(circle at 50% 30%, rgb(var(--accent) / 0.12), transparent 34%), radial-gradient(circle at 50% 100%, rgb(var(--accent) / 0.08), transparent 40%)',
         }}
       />
 
-      {/* Vertical accent lines */}
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+        <div className="animate-rotate-slow opacity-20">
+          <FlowerOfLife size={560} />
+        </div>
+      </div>
+
       <div
-        className="absolute top-0 w-px h-full pointer-events-none"
-        style={{
-          background: `linear-gradient(to bottom, transparent, rgb(var(--accent) / 0.1), transparent)`,
-          right: '15%',
-        }}
+        className="pointer-events-none absolute left-[12%] top-0 h-full w-px"
+        style={{ background: 'linear-gradient(180deg, transparent, rgb(var(--accent) / 0.14), transparent)' }}
       />
       <div
-        className="absolute top-0 w-px h-full pointer-events-none"
-        style={{
-          background: `linear-gradient(to bottom, transparent, rgb(var(--accent) / 0.05), transparent)`,
-          left: '15%',
-        }}
+        className="pointer-events-none absolute right-[12%] top-0 h-full w-px"
+        style={{ background: 'linear-gradient(180deg, transparent, rgb(var(--accent) / 0.08), transparent)' }}
       />
 
-      {/* Content */}
-      <div className="relative z-10 max-w-4xl mx-auto px-4 text-center">
+      <div className="relative z-10 mx-auto max-w-5xl text-center">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.2 }}
-          className="flex items-center justify-center gap-3 mb-8"
+          transition={{ duration: 0.7, delay: 0.15 }}
+          className="mb-8 inline-flex items-center gap-3"
         >
           <div className="h-px w-12" style={{ background: 'rgb(var(--accent) / 0.3)' }} />
-          <span
-            className="text-[10px] tracking-[0.4em] uppercase font-heading section-eyebrow"
-            style={{ color: 'rgb(var(--accent) / 0.6)' }}
-          >
+          <span className="text-[10px] tracking-[0.45em] uppercase font-heading section-eyebrow" style={{ color: 'rgb(var(--accent) / 0.62)' }}>
             Oracle Card Game
           </span>
           <div className="h-px w-12" style={{ background: 'rgb(var(--accent) / 0.3)' }} />
         </motion.div>
 
         <motion.h1
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 26 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, delay: 0.4 }}
-          className="font-heading text-4xl sm:text-5xl md:text-7xl leading-tight mb-6"
+          transition={{ duration: 0.9, delay: 0.3 }}
+          className="font-heading text-4xl leading-tight sm:text-6xl md:text-7xl"
           style={{ color: 'rgb(var(--text-primary))' }}
         >
           {content.taglinePre}{' '}
-          <span
-            className="relative inline-block"
-            style={{ color: 'rgb(var(--accent-bright))' }}
-          >
-            {content.accent}
-            <span
-              className="absolute -bottom-1 left-0 right-0 h-px"
-              style={{ background: `linear-gradient(to right, transparent, rgb(var(--accent)), transparent)` }}
-            />
-          </span>{' '}
+          <span style={{ color: 'rgb(var(--accent-bright))' }}>{content.accent}</span>{' '}
           {content.taglinePost}
         </motion.h1>
 
         <motion.p
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 18 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.7 }}
-          className="text-lg sm:text-xl max-w-2xl mx-auto mb-12 leading-relaxed"
-          style={{ color: 'rgb(var(--text-body))', opacity: 0.8 }}
+          transition={{ duration: 0.75, delay: 0.55 }}
+          className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed"
+          style={{ color: 'rgb(var(--text-body) / 0.8)' }}
         >
           {content.sub}
         </motion.p>
 
         <motion.div
+          initial={{ opacity: 0, y: 18 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.75, delay: 0.8 }}
+          className="mt-10"
+        >
+          <HeroActions align="center" secondaryLabel="Explore the Deck" />
+        </motion.div>
+
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.9 }}
-          className="flex flex-col sm:flex-row gap-4 justify-center items-center"
+          transition={{ duration: 0.75, delay: 1 }}
+          className="mx-auto mt-16 grid max-w-3xl grid-cols-1 gap-4 sm:grid-cols-3"
         >
-          <a
-            href="#products"
-            className="group px-8 py-3.5 rounded-xl font-heading text-sm tracking-[0.15em] uppercase no-underline transition-all btn-primary"
-            style={{
-              background: 'rgb(var(--accent))',
-              color: 'rgb(var(--bg-primary))',
-            }}
-          >
-            <span className="relative z-10 flex items-center gap-2">
-              <Sparkles size={16} />
-              Begin Your Journey
-            </span>
-          </a>
-          <a
-            href="#cards"
-            className="px-8 py-3.5 rounded-xl font-heading text-sm tracking-[0.15em] uppercase no-underline transition-all"
-            style={{
-              border: '1px solid rgb(var(--accent) / 0.3)',
-              color: 'rgb(var(--text-primary))',
-            }}
-          >
-            Explore the Deck
-          </a>
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 1, delay: 1.3 }}
-          className="flex justify-center gap-12 mt-16"
-        >
-          {[
-            { value: '45', label: 'Oracle Cards' },
-            { value: '15', label: 'Life Chapters' },
-            { value: '5', label: 'Rarities' },
-          ].map(stat => (
-            <div key={stat.label} className="text-center">
-              <div className="font-heading text-2xl sm:text-3xl" style={{ color: 'rgb(var(--accent))' }}>
-                {stat.value}
-              </div>
-              <div className="text-[10px] tracking-[0.2em] uppercase mt-1" style={{ color: 'rgb(var(--text-secondary) / 0.5)' }}>
-                {stat.label}
-              </div>
-            </div>
-          ))}
-        </motion.div>
-      </div>
-
-      {/* Scroll indicator */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 2 }}
-        className="absolute bottom-8 left-1/2 -translate-x-1/2"
-      >
-        <motion.div
-          animate={{ y: [0, 8, 0] }}
-          transition={{ repeat: Infinity, duration: 2 }}
-        >
-          <ArrowDown size={16} style={{ color: 'rgb(var(--accent) / 0.3)' }} />
-        </motion.div>
-      </motion.div>
-    </section>
-  );
-}
-
-function LeftAlignedHero({ content }: { content: typeof themeHeroContent['sacred-gold'] }) {
-  return (
-    <section className="relative min-h-screen flex items-end overflow-hidden pb-24">
-      {/* Desert texture overlay */}
-      <div
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          background: `linear-gradient(170deg, rgb(var(--bg-tertiary)) 0%, rgb(var(--bg-primary)) 50%, rgb(var(--bg-secondary)) 100%)`,
-        }}
-      />
-
-      {/* Horizontal line across the screen */}
-      <div
-        className="absolute top-1/3 left-0 right-0 h-px pointer-events-none"
-        style={{ background: 'rgb(var(--accent) / 0.08)' }}
-      />
-      <div
-        className="absolute top-2/3 left-0 right-0 h-px pointer-events-none"
-        style={{ background: 'rgb(var(--accent) / 0.05)' }}
-      />
-
-      <div className="relative z-10 max-w-7xl mx-auto px-6 sm:px-12 w-full">
-        <motion.div
-          initial={{ opacity: 0, x: -40 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 1, delay: 0.3 }}
-          className="max-w-2xl"
-        >
-          <span
-            className="text-[10px] tracking-[0.5em] uppercase font-heading section-eyebrow block mb-8"
-            style={{ color: 'rgb(var(--accent) / 0.4)' }}
-          >
-            Oracle Card Game
-          </span>
-
-          <h1
-            className="font-heading text-5xl sm:text-6xl md:text-8xl leading-none mb-4"
-            style={{ color: 'rgb(var(--text-primary))' }}
-          >
-            <motion.span
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.5 }}
-              className="block"
-            >
-              {content.taglinePre}
-            </motion.span>
-            <motion.span
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.7 }}
-              className="block"
-              style={{ color: 'rgb(var(--accent-bright))' }}
-            >
-              {content.accent}
-            </motion.span>
-            <motion.span
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.9 }}
-              className="block"
-            >
-              {content.taglinePost}
-            </motion.span>
-          </h1>
-
-          <motion.div
-            initial={{ scaleX: 0 }}
-            animate={{ scaleX: 1 }}
-            transition={{ delay: 1.1, duration: 0.8 }}
-            className="h-px w-48 mb-8 origin-left"
-            style={{ background: 'rgb(var(--accent) / 0.3)' }}
-          />
-
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 1.3 }}
-            className="text-base sm:text-lg max-w-lg mb-12 leading-relaxed"
-            style={{ color: 'rgb(var(--text-body))', opacity: 0.7 }}
-          >
-            {content.sub}
-          </motion.p>
-
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1.5 }}
-            className="flex gap-4"
-          >
-            <a
-              href="#products"
-              className="px-8 py-3.5 font-heading text-sm tracking-[0.15em] uppercase no-underline transition-all btn-primary"
+          {HERO_STATS.map((stat) => (
+            <div
+              key={stat.label}
+              className="rounded-[24px] px-6 py-5"
               style={{
-                background: 'rgb(var(--accent))',
-                color: 'rgb(var(--bg-primary))',
+                background: 'rgb(var(--bg-primary) / 0.55)',
+                border: '1px solid rgb(var(--border) / 0.14)',
+                backdropFilter: 'blur(14px)',
               }}
             >
-              Begin
-            </a>
-            <a
-              href="#cards"
-              className="px-8 py-3.5 font-heading text-sm tracking-[0.15em] uppercase no-underline transition-all"
-              style={{
-                border: '1px solid rgb(var(--accent) / 0.3)',
-                color: 'rgb(var(--text-primary))',
-              }}
-            >
-              Explore
-            </a>
-          </motion.div>
-        </motion.div>
-
-        {/* Right-side stat column */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1.7 }}
-          className="absolute right-12 top-1/2 -translate-y-1/2 hidden lg:flex flex-col gap-8"
-        >
-          {[
-            { value: '45', label: 'Cards' },
-            { value: '15', label: 'Chapters' },
-            { value: '5', label: 'Rarities' },
-          ].map(stat => (
-            <div key={stat.label} className="text-right">
               <div className="font-heading text-3xl" style={{ color: 'rgb(var(--accent))' }}>
                 {stat.value}
               </div>
-              <div className="text-[9px] tracking-[0.3em] uppercase" style={{ color: 'rgb(var(--text-secondary) / 0.4)' }}>
+              <div className="mt-1 text-[10px] tracking-[0.28em] uppercase" style={{ color: 'rgb(var(--text-secondary) / 0.48)' }}>
                 {stat.label}
               </div>
             </div>
@@ -380,436 +263,395 @@ function LeftAlignedHero({ content }: { content: typeof themeHeroContent['sacred
         </motion.div>
       </div>
 
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 2 }}
-        className="absolute bottom-8 left-1/2 -translate-x-1/2"
-      >
-        <motion.div animate={{ y: [0, 8, 0] }} transition={{ repeat: Infinity, duration: 2 }}>
-          <ArrowDown size={16} style={{ color: 'rgb(var(--accent) / 0.3)' }} />
-        </motion.div>
-      </motion.div>
+      <ScrollCue />
     </section>
   );
 }
 
-function SplitHero({ content, theme }: { content: typeof themeHeroContent['sacred-gold']; theme: string }) {
-  const isEmber = theme === 'ember';
-  return (
-    <section className="relative min-h-screen flex items-center overflow-hidden">
-      {/* Diagonal split background */}
-      <div className="absolute inset-0 pointer-events-none" style={{
-        background: isEmber
-          ? `linear-gradient(135deg, rgb(var(--bg-primary)) 50%, rgb(var(--bg-tertiary)) 50%)`
-          : `linear-gradient(135deg, rgb(var(--bg-tertiary)) 45%, rgb(var(--bg-primary)) 55%)`,
-      }} />
+function EditorialHero({
+  content,
+  theme,
+}: {
+  content: typeof themeHeroContent['sacred-gold'];
+  theme: string;
+}) {
+  const notes = EDITORIAL_NOTES[theme] || EDITORIAL_NOTES.ember;
 
-      <div className="relative z-10 max-w-7xl mx-auto px-6 w-full grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-        {/* Text side */}
-        <div className={isEmber ? '' : 'lg:order-2'}>
+  return (
+    <section className="relative flex min-h-screen items-center overflow-hidden px-4 py-24 sm:px-6 lg:px-8">
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background: 'linear-gradient(135deg, rgb(var(--bg-primary)) 0%, rgb(var(--bg-secondary)) 42%, rgb(var(--bg-tertiary)) 100%)',
+        }}
+      />
+      <div
+        className="absolute inset-y-0 left-[58%] hidden w-px lg:block"
+        style={{ background: 'linear-gradient(180deg, transparent, rgb(var(--accent) / 0.18), transparent)' }}
+      />
+      <div className="absolute -right-12 top-16 pointer-events-none text-[15rem] font-heading leading-none opacity-[0.05]" style={{ color: 'rgb(var(--accent))' }}>
+        15
+      </div>
+
+      <div className="relative z-10 mx-auto grid w-full max-w-7xl gap-16 lg:grid-cols-[minmax(0,1.1fr)_360px] lg:items-center">
+        <div>
           <motion.span
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.3 }}
-            className="text-[10px] tracking-[0.4em] uppercase font-heading section-eyebrow block mb-6"
-            style={{ color: 'rgb(var(--accent) / 0.5)' }}
+            initial={{ opacity: 0, x: -18 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.6, delay: 0.15 }}
+            className="mb-8 inline-block text-[10px] tracking-[0.45em] uppercase font-heading section-eyebrow"
+            style={{ color: 'rgb(var(--accent) / 0.58)' }}
           >
             Oracle Card Game
           </motion.span>
 
           <motion.h1
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: 22 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, delay: 0.5 }}
-            className="font-heading text-4xl sm:text-5xl md:text-6xl leading-tight mb-6"
+            transition={{ duration: 0.85, delay: 0.3 }}
+            className="font-heading text-5xl leading-none sm:text-7xl md:text-8xl"
             style={{ color: 'rgb(var(--text-primary))' }}
           >
-            {content.taglinePre}{' '}
-            <span style={{ color: 'rgb(var(--accent-bright))' }}>{content.accent}</span>{' '}
-            {content.taglinePost}
+            <span className="block">{content.taglinePre}</span>
+            <span className="block" style={{ color: 'rgb(var(--accent-bright))' }}>
+              {content.accent}
+            </span>
+            <span className="block">{content.taglinePost}</span>
           </motion.h1>
 
+          <motion.div
+            initial={{ scaleX: 0 }}
+            animate={{ scaleX: 1 }}
+            transition={{ duration: 0.6, delay: 0.75 }}
+            className="mt-8 h-px w-44 origin-left"
+            style={{ background: 'rgb(var(--accent) / 0.34)' }}
+          />
+
           <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.8 }}
-            className="text-base sm:text-lg max-w-lg mb-10 leading-relaxed"
-            style={{ color: 'rgb(var(--text-body))', opacity: 0.8 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.75, delay: 0.9 }}
+            className="mt-8 max-w-xl text-lg leading-relaxed"
+            style={{ color: 'rgb(var(--text-body) / 0.78)' }}
           >
             {content.sub}
           </motion.p>
 
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1 }}
-            className="flex flex-wrap gap-4"
+            transition={{ duration: 0.75, delay: 1.05 }}
+            className="mt-10"
           >
-            <a
-              href="#products"
-              className="px-8 py-3.5 font-heading text-sm tracking-[0.15em] uppercase no-underline transition-all btn-primary"
-              style={{
-                background: 'rgb(var(--accent))',
-                color: 'rgb(var(--bg-primary))',
-              }}
-            >
-              <span className="flex items-center gap-2">
-                <Sparkles size={16} />
-                Begin Your Journey
-              </span>
-            </a>
-            <a
-              href="#cards"
-              className="px-8 py-3.5 font-heading text-sm tracking-[0.15em] uppercase no-underline transition-all"
-              style={{
-                border: '1px solid rgb(var(--accent) / 0.3)',
-                color: 'rgb(var(--text-primary))',
-              }}
-            >
-              Explore
-            </a>
+            <HeroActions align="start" primaryLabel="Enter the Chapter" secondaryLabel="Read the Index" />
           </motion.div>
         </div>
 
-        {/* Visual side */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.6, duration: 1 }}
-          className={`flex items-center justify-center ${isEmber ? 'lg:order-2' : 'lg:order-1'}`}
+        <motion.aside
+          initial={{ opacity: 0, x: 24 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.8, delay: 0.45 }}
+          className="space-y-5"
         >
-          <div className="relative">
-            <div className="animate-rotate-slow opacity-40">
-              <FlowerOfLife size={400} />
-            </div>
-            {/* Stats layered over geometry */}
-            <div className="absolute inset-0 flex flex-col items-center justify-center gap-4">
-              {[
-                { value: '45', label: 'Oracle Cards' },
-                { value: '15', label: 'Life Chapters' },
-                { value: '5', label: 'Rarities' },
-              ].map((stat, i) => (
-                <motion.div
-                  key={stat.label}
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 1.2 + i * 0.2 }}
-                  className="text-center px-6 py-2 rounded-lg backdrop-blur-sm"
-                  style={{ background: 'rgb(var(--bg-primary) / 0.6)' }}
-                >
-                  <div className="font-heading text-xl" style={{ color: 'rgb(var(--accent))' }}>{stat.value}</div>
-                  <div className="text-[9px] tracking-[0.2em] uppercase" style={{ color: 'rgb(var(--text-secondary) / 0.5)' }}>
+          <div
+            className="rounded-[28px] p-6"
+            style={{
+              background: 'rgb(var(--bg-primary) / 0.5)',
+              border: '1px solid rgb(var(--border) / 0.14)',
+            }}
+          >
+            <p className="mb-3 text-[10px] tracking-[0.28em] uppercase font-heading" style={{ color: 'rgb(var(--accent) / 0.62)' }}>
+              Deck Structure
+            </p>
+            <div className="space-y-4">
+              {HERO_STATS.map((stat) => (
+                <div key={stat.label} className="flex items-end justify-between">
+                  <span className="text-sm" style={{ color: 'rgb(var(--text-body) / 0.72)' }}>
                     {stat.label}
-                  </div>
-                </motion.div>
+                  </span>
+                  <span className="font-heading text-3xl" style={{ color: 'rgb(var(--accent))' }}>
+                    {stat.value}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div
+            className="rounded-[28px] p-6"
+            style={{
+              background: 'rgb(var(--surface))',
+              border: '1px solid rgb(var(--border) / 0.12)',
+            }}
+          >
+            <p className="mb-4 text-[10px] tracking-[0.28em] uppercase font-heading" style={{ color: 'rgb(var(--accent) / 0.62)' }}>
+              Field Notes
+            </p>
+            <div className="space-y-3">
+              {notes.map((note, index) => (
+                <div key={note} className="flex gap-3">
+                  <span className="pt-0.5 text-[10px] tracking-[0.2em] uppercase" style={{ color: 'rgb(var(--accent) / 0.5)' }}>
+                    {String(index + 1).padStart(2, '0')}
+                  </span>
+                  <p className="text-sm leading-relaxed" style={{ color: 'rgb(var(--text-body) / 0.76)' }}>
+                    {note}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </motion.aside>
+      </div>
+
+      <ScrollCue />
+    </section>
+  );
+}
+
+function SignalHero({
+  content,
+  theme,
+}: {
+  content: typeof themeHeroContent['sacred-gold'];
+  theme: string;
+}) {
+  const notes = SIGNAL_NOTES[theme] || SIGNAL_NOTES.crystal;
+  const accentGlow = theme === 'arctic' ? 'rgb(var(--accent) / 0.08)' : 'rgb(var(--accent) / 0.14)';
+
+  return (
+    <section className="relative flex min-h-screen items-center overflow-hidden px-4 py-24 sm:px-6 lg:px-8">
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background: `radial-gradient(circle at 80% 20%, ${accentGlow}, transparent 28%), linear-gradient(180deg, rgb(var(--bg-primary)) 0%, rgb(var(--bg-secondary)) 100%)`,
+        }}
+      />
+
+      <div className="absolute left-6 top-6 hidden text-[11rem] font-heading leading-none opacity-[0.05] lg:block" style={{ color: 'rgb(var(--accent))' }}>
+        45
+      </div>
+
+      <div className="relative z-10 mx-auto grid w-full max-w-7xl gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(340px,420px)] lg:items-center">
+        <div>
+          <motion.span
+            initial={{ opacity: 0, y: 14 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.15 }}
+            className="mb-6 inline-flex rounded-full px-4 py-2 text-[10px] tracking-[0.35em] uppercase font-heading"
+            style={{
+              color: 'rgb(var(--accent) / 0.72)',
+              border: '1px solid rgb(var(--accent) / 0.2)',
+            }}
+          >
+            Signal Deck
+          </motion.span>
+
+          <motion.h1
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.3 }}
+            className="font-heading text-4xl leading-[0.96] sm:text-6xl md:text-7xl"
+            style={{ color: 'rgb(var(--text-primary))' }}
+          >
+            {content.taglinePre}
+            <br />
+            <span style={{ color: 'rgb(var(--accent-bright))' }}>{content.accent}</span>
+            <br />
+            {content.taglinePost}
+          </motion.h1>
+
+          <motion.p
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.55 }}
+            className="mt-6 max-w-xl text-lg leading-relaxed"
+            style={{ color: 'rgb(var(--text-body) / 0.78)' }}
+          >
+            {content.sub}
+          </motion.p>
+
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.78 }}
+            className="mt-9"
+          >
+            <HeroActions align="start" primaryLabel="Open Channel" secondaryLabel="Scan the Deck" />
+          </motion.div>
+        </div>
+
+        <motion.div
+          initial={{ opacity: 0, x: 24 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.8, delay: 0.45 }}
+          className="grid gap-4 sm:grid-cols-2"
+        >
+          <div
+            className="rounded-[28px] p-5 sm:col-span-2"
+            style={{
+              background: 'rgb(var(--bg-primary) / 0.58)',
+              border: '1px solid rgb(var(--border) / 0.15)',
+              backdropFilter: 'blur(16px)',
+            }}
+          >
+            <div className="mb-4 flex items-center justify-between">
+              <span className="text-[10px] tracking-[0.28em] uppercase font-heading" style={{ color: 'rgb(var(--accent) / 0.64)' }}>
+                Signal Map
+              </span>
+              <span className="text-[10px] tracking-[0.18em] uppercase" style={{ color: 'rgb(var(--text-secondary) / 0.45)' }}>
+                Live
+              </span>
+            </div>
+            <div className="flex items-center justify-center py-4">
+              <div className="opacity-70">
+                <FlowerOfLife size={220} />
+              </div>
+            </div>
+          </div>
+
+          {HERO_STATS.map((stat) => (
+            <div
+              key={stat.label}
+              className="rounded-[24px] p-5"
+              style={{
+                background: 'rgb(var(--surface))',
+                border: '1px solid rgb(var(--border) / 0.12)',
+              }}
+            >
+              <p className="text-[10px] tracking-[0.22em] uppercase" style={{ color: 'rgb(var(--text-secondary) / 0.45)' }}>
+                {stat.label}
+              </p>
+              <p className="mt-3 font-heading text-4xl" style={{ color: 'rgb(var(--accent))' }}>
+                {stat.value}
+              </p>
+            </div>
+          ))}
+
+          <div
+            className="rounded-[24px] p-5 sm:col-span-2"
+            style={{
+              background: 'rgb(var(--surface))',
+              border: '1px solid rgb(var(--border) / 0.12)',
+            }}
+          >
+            <p className="mb-3 text-[10px] tracking-[0.28em] uppercase font-heading" style={{ color: 'rgb(var(--accent) / 0.64)' }}>
+              System Notes
+            </p>
+            <div className="space-y-2">
+              {notes.map((note) => (
+                <div key={note} className="flex items-start gap-2">
+                  <span className="mt-1 h-1.5 w-1.5 rounded-full" style={{ background: 'rgb(var(--accent))' }} />
+                  <p className="text-sm leading-relaxed" style={{ color: 'rgb(var(--text-body) / 0.76)' }}>
+                    {note}
+                  </p>
+                </div>
               ))}
             </div>
           </div>
         </motion.div>
       </div>
 
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 2 }}
-        className="absolute bottom-8 left-1/2 -translate-x-1/2"
-      >
-        <motion.div animate={{ y: [0, 8, 0] }} transition={{ repeat: Infinity, duration: 2 }}>
-          <ArrowDown size={16} style={{ color: 'rgb(var(--accent) / 0.3)' }} />
-        </motion.div>
-      </motion.div>
+      <ScrollCue />
     </section>
   );
 }
 
-function MinimalTypographicHero({ content, theme }: { content: typeof themeHeroContent['sacred-gold']; theme: string }) {
-  const isArctic = theme === 'arctic';
+function ManifestHero({ content }: { content: typeof themeHeroContent['sacred-gold'] }) {
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-      {/* Very subtle background */}
-      <div className="absolute inset-0 pointer-events-none" style={{
-        background: `radial-gradient(circle at 50% 120%, rgb(var(--accent) / 0.03) 0%, transparent 60%)`,
-      }} />
-
-      <div className="relative z-10 max-w-5xl mx-auto px-6 text-center">
-        {/* Large typographic display */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 1.2, delay: 0.2 }}
-        >
-          <h1
-            className="font-heading leading-none mb-2"
-            style={{
-              color: 'rgb(var(--text-primary))',
-              fontSize: 'clamp(3rem, 10vw, 9rem)',
-              fontWeight: isArctic ? 200 : 500,
-              letterSpacing: isArctic ? '0.3em' : '0.1em',
-            }}
-          >
-            {content.taglinePre}
-          </h1>
-          <motion.h1
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.6 }}
-            className="font-heading leading-none mb-2"
-            style={{
-              color: 'rgb(var(--accent-bright))',
-              fontSize: 'clamp(3rem, 12vw, 11rem)',
-              fontWeight: isArctic ? 100 : 600,
-              letterSpacing: isArctic ? '0.2em' : '0.05em',
-            }}
-          >
-            {content.accent}
-          </motion.h1>
-          <motion.h1
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.9 }}
-            className="font-heading leading-none"
-            style={{
-              color: 'rgb(var(--text-primary))',
-              fontSize: 'clamp(2rem, 6vw, 5rem)',
-              fontWeight: isArctic ? 300 : 400,
-              letterSpacing: isArctic ? '0.5em' : '0.15em',
-            }}
-          >
-            {content.taglinePost}
-          </motion.h1>
-        </motion.div>
-
-        <motion.div
-          initial={{ scaleX: 0 }}
-          animate={{ scaleX: 1 }}
-          transition={{ delay: 1.2, duration: 0.6 }}
-          className="mx-auto my-10 h-px w-24"
-          style={{ background: 'rgb(var(--accent) / 0.2)' }}
-        />
-
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1.4 }}
-          className="text-sm max-w-md mx-auto mb-12 leading-relaxed"
-          style={{ color: 'rgb(var(--text-body))', opacity: 0.6 }}
-        >
-          {content.sub}
-        </motion.p>
-
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 1.6 }}
-          className="flex gap-4 justify-center"
-        >
-          <a
-            href="#products"
-            className="px-8 py-3.5 font-heading text-sm tracking-[0.15em] uppercase no-underline transition-all btn-primary"
-            style={{
-              background: 'rgb(var(--accent))',
-              color: 'rgb(var(--bg-primary))',
-            }}
-          >
-            Begin
-          </a>
-          <a
-            href="#cards"
-            className="px-8 py-3.5 font-heading text-sm tracking-[0.15em] uppercase no-underline transition-all"
-            style={{
-              border: '1px solid rgb(var(--accent) / 0.2)',
-              color: 'rgb(var(--text-primary))',
-            }}
-          >
-            Browse
-          </a>
-        </motion.div>
-
-        {/* Inline stats */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1.8 }}
-          className="flex justify-center gap-16 mt-20"
-        >
-          {[
-            { value: '45', label: 'Cards' },
-            { value: '15', label: 'Chapters' },
-            { value: '5', label: 'Rarities' },
-          ].map(stat => (
-            <div key={stat.label} className="text-center">
-              <div className="font-heading text-3xl" style={{ color: 'rgb(var(--accent) / 0.7)' }}>
-                {stat.value}
-              </div>
-              <div className="text-[9px] tracking-[0.3em] uppercase mt-1" style={{ color: 'rgb(var(--text-secondary) / 0.3)' }}>
-                {stat.label}
-              </div>
-            </div>
-          ))}
-        </motion.div>
-      </div>
-
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 2 }}
-        className="absolute bottom-8 left-1/2 -translate-x-1/2"
-      >
-        <motion.div animate={{ y: [0, 8, 0] }} transition={{ repeat: Infinity, duration: 2 }}>
-          <ArrowDown size={16} style={{ color: 'rgb(var(--accent) / 0.3)' }} />
-        </motion.div>
-      </motion.div>
-    </section>
-  );
-}
-
-function BrutalistHero({ content }: { content: typeof themeHeroContent['sacred-gold'] }) {
-  return (
-    <section className="relative min-h-screen flex items-center overflow-hidden">
-      {/* Hard-edge background blocks */}
+    <section className="relative flex min-h-screen items-center overflow-hidden px-4 py-24 sm:px-6 lg:px-8">
       <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-0 left-0 w-1/2 h-full" style={{ background: 'rgb(var(--bg-primary))' }} />
-        <div className="absolute top-0 right-0 w-1/2 h-full" style={{ background: 'rgb(var(--bg-secondary))' }} />
+        <div className="absolute inset-y-0 left-0 w-[38%]" style={{ background: 'rgb(var(--bg-primary))' }} />
+        <div className="absolute inset-y-0 right-0 w-[62%]" style={{ background: 'rgb(var(--bg-secondary))' }} />
         <div className="absolute bottom-0 left-0 right-0 h-1" style={{ background: 'rgb(var(--accent))' }} />
       </div>
 
-      <div className="relative z-10 max-w-7xl mx-auto px-6 w-full">
+      <div className="relative z-10 mx-auto grid w-full max-w-7xl gap-10 lg:grid-cols-[260px_minmax(0,1fr)] lg:items-end">
         <motion.div
-          initial={{ opacity: 0, x: -20 }}
+          initial={{ opacity: 0, x: -18 }}
           animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.6, delay: 0.2 }}
+          transition={{ duration: 0.6, delay: 0.15 }}
+          className="border-b pb-6 lg:border-b-0 lg:border-r lg:pb-0 lg:pr-8"
+          style={{ borderColor: 'rgb(var(--accent) / 0.24)' }}
         >
-          {/* Brutalist label */}
-          <div
-            className="inline-block px-3 py-1 mb-8 text-[10px] tracking-[0.5em] uppercase font-heading section-eyebrow"
-            style={{
-              background: 'rgb(var(--accent))',
-              color: 'rgb(var(--bg-primary))',
-            }}
-          >
+          <div className="text-[10px] tracking-[0.45em] uppercase font-heading" style={{ color: 'rgb(var(--accent))' }}>
             Oracle Card Game
           </div>
+          <div className="mt-6 font-heading text-[7rem] leading-none sm:text-[9rem]" style={{ color: 'rgb(var(--accent))' }}>
+            45
+          </div>
+          <div className="mt-2 space-y-3">
+            {HERO_STATS.map((stat) => (
+              <div key={stat.label}>
+                <div className="text-[9px] tracking-[0.35em] uppercase" style={{ color: 'rgb(var(--text-secondary) / 0.42)' }}>
+                  {stat.label}
+                </div>
+                <div className="font-heading text-2xl" style={{ color: 'rgb(var(--text-primary))' }}>
+                  {stat.value}
+                </div>
+              </div>
+            ))}
+          </div>
+        </motion.div>
 
-          <h1
-            className="font-heading leading-none mb-4"
+        <div>
+          <motion.h1
+            initial={{ opacity: 0, y: 18 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.75, delay: 0.3 }}
+            className="font-heading text-5xl uppercase leading-[0.9] sm:text-7xl md:text-[7rem]"
             style={{
               color: 'rgb(var(--text-primary))',
-              fontSize: 'clamp(3rem, 10vw, 8rem)',
-              fontWeight: 900,
-              textTransform: 'uppercase',
-              letterSpacing: '-0.02em',
-            }}
-          >
-            {content.taglinePre}
-          </h1>
-          <h1
-            className="font-heading leading-none mb-4"
-            style={{
-              color: 'rgb(var(--accent))',
-              fontSize: 'clamp(4rem, 14vw, 12rem)',
-              fontWeight: 900,
-              textTransform: 'uppercase',
               letterSpacing: '-0.03em',
             }}
           >
-            {content.accent}
-          </h1>
-          <h1
-            className="font-heading leading-none"
-            style={{
-              color: 'rgb(var(--text-primary))',
-              fontSize: 'clamp(3rem, 10vw, 8rem)',
-              fontWeight: 900,
-              textTransform: 'uppercase',
-              letterSpacing: '-0.02em',
-            }}
-          >
+            {content.taglinePre}
+            <br />
+            <span style={{ color: 'rgb(var(--accent))' }}>{content.accent}</span>
+            <br />
             {content.taglinePost}
-          </h1>
-        </motion.div>
+          </motion.h1>
 
-        <motion.div
-          initial={{ scaleX: 0 }}
-          animate={{ scaleX: 1 }}
-          transition={{ delay: 0.8, duration: 0.4 }}
-          className="h-0.5 w-32 my-8 origin-left"
-          style={{ background: 'rgb(var(--accent))' }}
-        />
-
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1 }}
-          className="text-sm max-w-md mb-12"
-          style={{ color: 'rgb(var(--text-body))', opacity: 0.7 }}
-        >
-          {content.sub}
-        </motion.p>
-
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1.2 }}
-          className="flex gap-4"
-        >
-          <a
-            href="#products"
-            className="px-8 py-3.5 font-heading text-sm tracking-[0.15em] uppercase no-underline transition-all btn-primary"
-            style={{
-              border: '2px solid rgb(var(--accent))',
-              color: 'rgb(var(--accent))',
-              background: 'transparent',
-            }}
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.7, delay: 0.58 }}
+            className="mt-8 max-w-xl text-base leading-relaxed"
+            style={{ color: 'rgb(var(--text-body) / 0.78)' }}
           >
-            Enter
-          </a>
-          <a
-            href="#cards"
-            className="px-8 py-3.5 font-heading text-sm tracking-[0.15em] uppercase no-underline transition-all"
-            style={{
-              color: 'rgb(var(--text-primary))',
-              borderBottom: '2px solid rgb(var(--accent) / 0.3)',
-            }}
-          >
-            Browse
-          </a>
-        </motion.div>
+            {content.sub}
+          </motion.p>
 
-        {/* Stats in a vertical line on the right */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1.4 }}
-          className="absolute right-6 top-1/2 -translate-y-1/2 hidden lg:flex flex-col gap-12"
-        >
-          {[
-            { value: '45', label: 'Cards' },
-            { value: '15', label: 'Chapters' },
-            { value: '05', label: 'Rarities' },
-          ].map(stat => (
-            <div key={stat.label}>
-              <div className="font-heading text-4xl font-black" style={{ color: 'rgb(var(--accent))' }}>
-                {stat.value}
-              </div>
-              <div className="text-[8px] tracking-[0.4em] uppercase" style={{ color: 'rgb(var(--text-secondary) / 0.3)' }}>
-                {stat.label}
-              </div>
-            </div>
-          ))}
-        </motion.div>
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.8 }}
+            className="mt-10 flex flex-col gap-4 sm:flex-row"
+          >
+            <a
+              href="#products"
+              className="inline-flex items-center justify-center border-2 px-8 py-3.5 font-heading text-sm tracking-[0.18em] uppercase no-underline transition-all"
+              style={{
+                borderColor: 'rgb(var(--accent))',
+                color: 'rgb(var(--accent))',
+              }}
+            >
+              Enter
+            </a>
+            <a
+              href="#cards"
+              className="inline-flex items-center justify-center border-b-2 px-2 py-3.5 font-heading text-sm tracking-[0.18em] uppercase no-underline transition-all"
+              style={{
+                borderColor: 'rgb(var(--accent) / 0.4)',
+                color: 'rgb(var(--text-primary))',
+              }}
+            >
+              Browse
+            </a>
+          </motion.div>
+        </div>
       </div>
 
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 2 }}
-        className="absolute bottom-8 left-1/2 -translate-x-1/2"
-      >
-        <motion.div animate={{ y: [0, 8, 0] }} transition={{ repeat: Infinity, duration: 2 }}>
-          <ArrowDown size={16} style={{ color: 'rgb(var(--accent) / 0.3)' }} />
-        </motion.div>
-      </motion.div>
+      <ScrollCue />
     </section>
   );
 }
@@ -817,18 +659,16 @@ function BrutalistHero({ content }: { content: typeof themeHeroContent['sacred-g
 export default function HeroSection() {
   const { theme } = useTheme();
   const content = themeHeroContent[theme] || themeHeroContent['sacred-gold'];
-  const variant = THEME_VARIANT[theme] || 'centered';
+  const variant = THEME_VARIANT[theme] || 'ritual';
 
   switch (variant) {
-    case 'left-aligned':
-      return <LeftAlignedHero content={content} />;
-    case 'split':
-      return <SplitHero content={content} theme={theme} />;
-    case 'minimal-typographic':
-      return <MinimalTypographicHero content={content} theme={theme} />;
-    case 'brutalist':
-      return <BrutalistHero content={content} />;
+    case 'editorial':
+      return <EditorialHero content={content} theme={theme} />;
+    case 'signal':
+      return <SignalHero content={content} theme={theme} />;
+    case 'manifest':
+      return <ManifestHero content={content} />;
     default:
-      return <CenteredHero content={content} theme={theme} />;
+      return <RitualHero content={content} theme={theme} />;
   }
 }
