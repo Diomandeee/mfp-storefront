@@ -3,7 +3,8 @@
 import React, { createContext, useContext, useState, useCallback, useEffect, useRef } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import type { ShopifyCart } from './shopify';
-import { createCart, addToCart, removeFromCart, updateCartLineQuantity } from './shopify';
+import { createCart, addToCart, removeFromCart, updateCartLine } from './shopify';
+import Toast, { type ToastMessage } from '../components/Toast';
 
 interface CartContextType {
   cart: ShopifyCart | null;
@@ -12,7 +13,7 @@ interface CartContextType {
   error: string | null;
   openCart: () => void;
   closeCart: () => void;
-  addItem: (variantId: string, quantity?: number) => Promise<void>;
+  addItem: (variantId: string, quantity?: number, productName?: string) => Promise<void>;
   removeItem: (lineId: string) => Promise<void>;
   updateItemQuantity: (lineId: string, quantity: number) => Promise<void>;
 }
@@ -24,9 +25,11 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const [toast, setToast] = useState<ToastMessage | null>(null);
+  const [errorToast, setErrorToast] = useState<string | null>(null);
   const cartRef = useRef<ShopifyCart | null>(null);
   const toastTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const errorToastTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const commitCart = useCallback((nextCart: ShopifyCart | null) => {
     cartRef.current = nextCart;
@@ -36,16 +39,38 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const openCart = useCallback(() => setIsOpen(true), []);
   const closeCart = useCallback(() => setIsOpen(false), []);
 
-  const showToast = useCallback((message: string) => {
+  const showToast = useCallback((nextToast: ToastMessage) => {
     if (toastTimeoutRef.current) {
       clearTimeout(toastTimeoutRef.current);
     }
+    if (errorToastTimeoutRef.current) {
+      clearTimeout(errorToastTimeoutRef.current);
+      errorToastTimeoutRef.current = null;
+    }
 
-    setToastMessage(message);
+    setErrorToast(null);
+    setToast(nextToast);
     toastTimeoutRef.current = setTimeout(() => {
-      setToastMessage(null);
+      setToast(null);
       toastTimeoutRef.current = null;
     }, 3000);
+  }, []);
+
+  const showErrorToast = useCallback((message: string) => {
+    if (errorToastTimeoutRef.current) {
+      clearTimeout(errorToastTimeoutRef.current);
+    }
+    if (toastTimeoutRef.current) {
+      clearTimeout(toastTimeoutRef.current);
+      toastTimeoutRef.current = null;
+    }
+
+    setToast(null);
+    setErrorToast(message);
+    errorToastTimeoutRef.current = setTimeout(() => {
+      setErrorToast(null);
+      errorToastTimeoutRef.current = null;
+    }, 4000);
   }, []);
 
   useEffect(() => {
@@ -53,10 +78,13 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       if (toastTimeoutRef.current) {
         clearTimeout(toastTimeoutRef.current);
       }
+      if (errorToastTimeoutRef.current) {
+        clearTimeout(errorToastTimeoutRef.current);
+      }
     };
   }, []);
 
-  const addItem = useCallback(async (variantId: string, quantity = 1) => {
+  const addItem = useCallback(async (variantId: string, quantity = 1, productName = 'Unknown Card') => {
     setIsLoading(true);
     setError(null);
     const currentCart = cartRef.current;
@@ -68,14 +96,19 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
       commitCart(nextCart);
       setIsOpen(true);
-      showToast('Added to cart');
+      showToast({
+        title: 'Card acquired',
+        detail: productName,
+      });
     } catch (err) {
       console.error('Failed to add to cart:', err);
-      setError(err instanceof Error ? err.message : 'Failed to add item to cart.');
+      const errorMessage = err instanceof Error ? err.message : 'Failed to add item to cart.';
+      setError(errorMessage);
+      showErrorToast(errorMessage);
     } finally {
       setIsLoading(false);
     }
-  }, [commitCart, showToast]);
+  }, [commitCart, showErrorToast, showToast]);
 
   const removeItem = useCallback(async (lineId: string) => {
     const currentCart = cartRef.current;
@@ -87,17 +120,22 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     try {
       const updated = await removeFromCart(currentCart.id, lineId);
       commitCart(updated);
+      showToast({ title: 'Card released', detail: 'Item removed from collection' });
     } catch (err) {
       console.error('Failed to remove from cart:', err);
-      setError(err instanceof Error ? err.message : 'Failed to remove item from cart.');
+      const errorMessage = err instanceof Error ? err.message : 'Failed to remove item from cart.';
+      setError(errorMessage);
+      showErrorToast(errorMessage);
     } finally {
       setIsLoading(false);
     }
-  }, [commitCart]);
+  }, [commitCart, showErrorToast, showToast]);
 
   const updateItemQuantity = useCallback(async (lineId: string, quantity: number) => {
     const currentCart = cartRef.current;
     if (!currentCart) return;
+    const currentLine = currentCart.lines.edges.find((edge) => edge.node.id === lineId)?.node;
+    const previousQuantity = currentLine?.quantity ?? 0;
 
     setIsLoading(true);
     setError(null);
@@ -105,35 +143,51 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     try {
       const updated = quantity <= 0
         ? await removeFromCart(currentCart.id, lineId)
-        : await updateCartLineQuantity(currentCart.id, lineId, quantity);
+        : await updateCartLine(currentCart.id, lineId, quantity);
 
       commitCart(updated);
+      if (quantity <= 0) {
+        showToast({ title: 'Card released', detail: 'Item removed from collection' });
+      } else if (quantity < previousQuantity) {
+        showToast({ title: 'Quantity updated', detail: 'Collection adjusted' });
+      } else if (quantity > previousQuantity) {
+        showToast({ title: 'Card stacked', detail: 'Quantity increased' });
+      }
     } catch (err) {
       console.error('Failed to update cart quantity:', err);
-      setError(err instanceof Error ? err.message : 'Failed to update cart quantity.');
+      const errorMessage = err instanceof Error ? err.message : 'Failed to update cart quantity.';
+      setError(errorMessage);
+      showErrorToast(errorMessage);
     } finally {
       setIsLoading(false);
     }
-  }, [commitCart]);
+  }, [commitCart, showErrorToast, showToast]);
 
   return (
     <CartContext.Provider value={{ cart, isOpen, isLoading, error, openCart, closeCart, addItem, removeItem, updateItemQuantity }}>
       {children}
+      <Toast toast={toast} />
       <AnimatePresence>
-        {toastMessage && (
+        {errorToast && (
           <motion.div
-            initial={{ opacity: 0, y: 24, scale: 0.96 }}
+            initial={{ opacity: 0, y: 28, scale: 0.94 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 16, scale: 0.98 }}
-            transition={{ duration: 0.22, ease: 'easeOut' }}
-            className="fixed bottom-6 left-1/2 z-[70] -translate-x-1/2 px-5 py-3 rounded-full text-sm font-heading tracking-[0.14em] uppercase"
+            transition={{ duration: 0.24, ease: 'easeOut' }}
+            className="fixed bottom-6 left-1/2 z-[70] w-[min(92vw,24rem)] -translate-x-1/2 overflow-hidden rounded-[24px] px-5 py-4"
             style={{
-              background: 'rgb(var(--accent))',
-              color: 'rgb(var(--bg-primary))',
-              boxShadow: '0 14px 40px rgb(0 0 0 / 0.25)',
+              background: 'linear-gradient(135deg, rgb(var(--surface)), rgb(var(--bg-secondary)))',
+              color: 'rgb(var(--status-error))',
+              border: '1px solid rgb(var(--status-error) / 0.24)',
+              boxShadow: '0 0 28px rgb(var(--status-error) / 0.12), 0 18px 52px rgb(0 0 0 / 0.3)',
             }}
           >
-            {toastMessage}
+            <p className="text-[10px] tracking-[0.28em] uppercase font-heading" style={{ color: 'rgb(var(--status-error) / 0.7)' }}>
+              Oracle Error
+            </p>
+            <p className="mt-1 font-heading text-sm" style={{ color: 'rgb(var(--status-error-soft))' }}>
+              {errorToast}
+            </p>
           </motion.div>
         )}
       </AnimatePresence>
