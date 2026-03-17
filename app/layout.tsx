@@ -48,6 +48,9 @@ export const metadata: Metadata = {
   title: 'Meaning Full Power | 45 Oracle Cards, 15 Chapters, One Journey',
   description:
     'A premium wisdom oracle card game with 45 NFC-enabled cards across 15 life chapters. Draw your card. Begin your journey.',
+  icons: {
+    icon: '/favicon.svg',
+  },
   keywords: ['oracle cards', 'wisdom deck', 'NFC cards', 'meditation cards', 'self-reflection', 'card game', 'meaning full power', 'triptych'],
   authors: [{ name: 'Meaning Full Power' }],
   openGraph: {
